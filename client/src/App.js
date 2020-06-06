@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Tone from 'tone';
+import * as Tone from 'tone';
 import logo from './logo.svg';
 
 import './App.css';
@@ -38,6 +38,15 @@ class App extends Component {
     
     this.setState({ responseToPost: body });
   };
+
+  play(){
+    //create a synth and connect it to the master output (your speakers)
+    const synth = new Tone.Synth().toMaster();
+    var note = document.getElementById('frequencySlider').value;
+    var duration = document.getElementById('durationSlider').value;
+    console.log(note + 'Hz, ' + duration + 'sec');
+    synth.triggerAttackRelease(note, duration);
+  }
   
 render() {
     return (
@@ -67,6 +76,12 @@ render() {
           <button type="submit">Submit</button>
         </form>
         <p>{this.state.responseToPost}</p>
+        TONEJS<br></br>
+        <button onClick={this.play}>play</button>
+        Frequency (Hz)
+        <input id="frequencySlider"  type="range" min="20" max="4000" step="1" defaultValue="262"/>
+        Duration (sec)
+        <input id="durationSlider"  type="range" min="0" max="2" step=".1" defaultValue="1"/>
       </div>
     );
   }
