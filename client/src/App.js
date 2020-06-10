@@ -44,6 +44,14 @@ class App extends Component {
     const synth = new Tone.Synth().toMaster();
     var note = document.getElementById('frequencySlider').value;
     var duration = document.getElementById('durationSlider').value;
+    var attack = document.getElementById('attackSlider').value;
+    var decay = document.getElementById('decaySlider').value;
+    var sustain = document.getElementById('sustainSlider').value;
+    var release = document.getElementById('releaseSlider').value;
+    synth.envelope.attack = attack;
+    synth.envelope.decay = decay;
+    synth.envelope.sustain = sustain;
+    synth.envelope.release = release;
     console.log(note + 'Hz, ' + duration + 'sec');
     synth.triggerAttackRelease(note, duration);
   }
@@ -77,11 +85,63 @@ render() {
         </form>
         <p>{this.state.responseToPost}</p>
         TONEJS<br></br>
+        <table>
+        <tr>
+            <th colspan="2">Note and Duration</th>
+          </tr>
+          <tr>
+            <td>
+              Frequency (Hz)
+            </td>
+            <td>
+              <input id="frequencySlider"  type="range" min="20" max="4000" step="1" defaultValue="262"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Duration (sec)
+            </td>
+            <td>
+              <input id="durationSlider"  type="range" min="0.1" max="2" step=".1" defaultValue="1"/>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="2">Envelope</th>
+          </tr>
+          <tr>
+            <td>
+              Attack
+            </td>
+            <td>
+              <input id="attackSlider"  type="range" min="0.1" max="2" step=".1" defaultValue="1"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Decay
+            </td>
+            <td>
+              <input id="decaySlider"  type="range" min="0.1" max="2" step=".1" defaultValue="1"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Sustain
+            </td>
+            <td>
+              <input id="sustainSlider"  type="range" min="0.1" max="2" step=".1" defaultValue="1"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Release
+            </td>
+            <td>
+              <input id="releaseSlider"  type="range" min="0.1" max="2" step=".1" defaultValue="1"/>
+            </td>
+          </tr>
+        </table>
         <button onClick={this.play}>play</button>
-        Frequency (Hz)
-        <input id="frequencySlider"  type="range" min="20" max="4000" step="1" defaultValue="262"/>
-        Duration (sec)
-        <input id="durationSlider"  type="range" min="0" max="2" step=".1" defaultValue="1"/>
       </div>
     );
   }
