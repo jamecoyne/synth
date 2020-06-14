@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as Tone from 'tone';
 import BackendExample from './backendExample'
-
+import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import './App.css';
 
 class App extends Component {
@@ -9,29 +9,60 @@ class App extends Component {
   synth = new Tone.Synth().toMaster();
   
   state = {
-      note: 265,
+      ocatve: 3,
       duration: 0.2,
       envelope: {
         attack: 0.5,
         decay: 0.5,
         sustain: 0.5,
         release: 0.5
+      },
+      noteRange: {
+        first: MidiNumbers.fromNote('c3'),
+        last: MidiNumbers.fromNote('a4'),
       }
   };
 
+  keyboardShortcuts = KeyboardShortcuts.create({
+    firstNote: this.state.noteRange.first,
+    lastNote: this.state.noteRange.last,
+    keyboardConfig: KeyboardShortcuts.HOME_ROW,
+  });
+
+
+
   componentDidUpdate(props){
-    console.log('state changed');
     // set the synthesizer's envelope everytime a slider is changed
     this.synth.envelope.set(this.state.envelope);
   }
 
-  play = () => {
-    this.synth.triggerAttackRelease(this.state.note, this.state.duration);
+  play = (freq) => {
+    this.synth.triggerAttackRelease(freq, this.state.duration);
   }
   
+  playNode = midiNote => {
+    midiNote =   0.0 + midiNote
+    console.log('midiNote: ' + midiNote);
+    let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
+    console.log('frequency:' + freq);
+    this.play(freq);
+  }
+
+  stopNote = midiNote => {
+    console.log('note stopped');
+  }
+
 render() {
     return (
       <div className="App">
+        <Piano
+          noteRange={this.state.noteRange}
+          width={600}
+          playNote={this.playNode}
+          stopNote={this.stopNote}
+          disabled={false}
+          keyboardShortcuts={this.keyboardShortcuts}
+        />
         {/* <BackendExample/> */}
         TONEJS
         <br/>
@@ -41,16 +72,16 @@ render() {
           </tr>
           <tr>
             <td>
-              Frequency (Hz)
+              Octave
             </td>
             <td>
               <input 
                 id={"frequencySlider"}
                 type={"range"}
-                min={20}
-                max={4000}
+                min={0}
+                max={5}
                 step={1}
-                defaultValue={this.state.note}
+                defaultValue={this.state.ocatve}
                 onChange={
                   (e: React.FormEvent<HTMLInputElement>) => {
                     this.setState({note: parseFloat(e.currentTarget.value)})
