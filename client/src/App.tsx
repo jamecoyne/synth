@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as Tone from 'tone';
 import BackendExample from './backendExample'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
+import 'react-piano/dist/styles.css'
 import './App.css';
 
 class App extends Component {
