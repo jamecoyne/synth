@@ -195,7 +195,6 @@ render() {
             </td>
           </tr>
         </table>
-        <button onClick={this.play}>play</button>
       </div>
     );
   }
