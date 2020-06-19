@@ -10,7 +10,7 @@ class App extends Component {
   synth = new Tone.Synth().toMaster();
   
   state = {
-      ocatve: 3,
+      octave: 0,
       duration: 0.2,
       envelope: {
         attack: 0.5,
@@ -42,10 +42,21 @@ class App extends Component {
   }
   
   playNode = midiNote => {
+	console.log(this.state.octave)
     midiNote =   0.0 + midiNote
     console.log('midiNote: ' + midiNote);
-    let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
-    console.log('frequency:' + freq);
+	let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
+	//applying octave to freq
+	if(this.state.octave > 0){
+		for(let i=0; i < this.state.octave; i++){
+			freq = freq * 2;
+		}
+	}else if(this.state.octave < 0){
+		for(let i=0; i > this.state.octave; i--){
+			freq = freq / 2;
+		}
+	}
+	console.log('frequency:' + freq);
     this.play(freq);
   }
 
@@ -77,15 +88,15 @@ render() {
             </td>
             <td>
               <input 
-                id={"frequencySlider"}
+                id={"octaveSlider"}
                 type={"range"}
-                min={0}
-                max={5}
+                min={-2}
+                max={2}
                 step={1}
-                defaultValue={this.state.ocatve}
+                defaultValue={this.state.octave}
                 onChange={
                   (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({note: parseFloat(e.currentTarget.value)})
+                    this.setState({octave: parseFloat(e.currentTarget.value)})
                   }
                 }
               />
@@ -195,7 +206,6 @@ render() {
             </td>
           </tr>
         </table>
-        <button onClick={this.play}>play</button>
       </div>
     );
   }
