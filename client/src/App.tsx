@@ -53,6 +53,17 @@ class App extends Component {
     console.log('note stopped');
   }
 
+  toggleClass() {
+    if(document.getElementById("ex")?.classList.contains("row"))
+    {
+      document.getElementById("ex")?.classList.remove("row")
+      document.getElementById("ex")?.classList.add("row_filled")
+    } else {
+      document.getElementById("ex")?.classList.remove("row_filled")
+      document.getElementById("ex")?.classList.add("row")
+    }
+  }
+
 render() {
     return (
       <div className="App">
@@ -196,6 +207,106 @@ render() {
           </tr>
         </table>
         <button onClick={this.play}>play</button>
+        <p>SEQUENCER</p>
+        <div className={"transport"}></div>
+        <div className={"container"}>
+          <div className={"column"}>
+            <div id = {"ex"} className={"row"} onMouseDown={this.toggleClass}></div>
+            <div className={"row_filled"}></div>
+            <div className={"row"}></div>
+            <div className={"row"}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+          <div className={"column "}>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+            <div className={"row "}></div>
+          </div>
+        </div>
       </div>
     );
   }
