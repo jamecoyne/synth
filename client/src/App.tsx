@@ -53,14 +53,14 @@ class App extends Component {
     console.log('note stopped');
   }
 
-  toggleClass() {
-    if(document.getElementById("ex")?.classList.contains("row"))
+  toggleClass(hek : HTMLElement) {
+    if(hek.classList.contains("row"))
     {
-      document.getElementById("ex")?.classList.remove("row")
-      document.getElementById("ex")?.classList.add("row_filled")
+      hek.classList.remove("row")
+      hek.classList.add("row_filled")
     } else {
-      document.getElementById("ex")?.classList.remove("row_filled")
-      document.getElementById("ex")?.classList.add("row")
+      hek.classList.remove("row_filled")
+      hek.classList.add("row")
     }
   }
 
@@ -211,100 +211,100 @@ render() {
         <div className={"transport"}></div>
         <div className={"container"}>
           <div className={"column"}>
-            <div id = {"ex"} className={"row"} onMouseDown={this.toggleClass}></div>
-            <div className={"row_filled"}></div>
-            <div className={"row"}></div>
-            <div className={"row"}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row_filled"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
           <div className={"column "}>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
-            <div className={"row "}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
+            <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
           </div>
         </div>
       </div>
