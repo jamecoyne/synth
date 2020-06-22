@@ -6,7 +6,8 @@ import 'react-piano/dist/styles.css'
 import './App.css';
 
 class App extends Component {
-
+  rows = 3;
+  columns = 8;
   synth = new Tone.Synth().toMaster();
   
   state = {
@@ -21,7 +22,8 @@ class App extends Component {
       noteRange: {
         first: MidiNumbers.fromNote('c3'),
         last: MidiNumbers.fromNote('a4'),
-      }
+      },
+  	  sequencer: Array(this.rows).fill(0).map(row => new Array(this.columns).fill(0))
   };
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -29,8 +31,8 @@ class App extends Component {
     lastNote: this.state.noteRange.last,
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
-
-
+  
+  
 
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
@@ -38,7 +40,7 @@ class App extends Component {
   }
 
   play = (freq) => {
-    this.synth.triggerAttackRelease(freq, this.state.duration);
+	this.synth.triggerAttackRelease(freq, this.state.duration);
   }
   
   playNode = midiNote => {
