@@ -5,6 +5,20 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css'
 import './App.css';
 
+function SequencerCell (props) {
+	return (
+		<input type='checkbox' onClick={props.click(props.col)}></input>
+	);
+}
+
+function SequencerRow (props) {
+	const columns = props.columns;
+	const click = props.click;
+    let range = Array.from(Array(columns), (_, i) => i + 1);
+	return (<ul>{range.map((item) => <input type='checkbox' key={item}/>)}</ul>
+	);
+}
+
 class App extends Component {
   synth = new Tone.Synth().toMaster();
   state = {
@@ -44,13 +58,11 @@ class App extends Component {
   }
 
   playSequence = () => {
-  	console.clear();
-    console.log('nice');
 	let index = 0;
 	this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
 	Tone.Transport.scheduleRepeat((time) => {
 		let step = index % this.state.sequencer_row.length; 
-		if (this.state.sequencer_row[step] == 1) {
+		if (this.state.sequencer_row[step] === 1) {
 				this.play(this.state.currentNote);
 			}	
 		index++;
@@ -97,6 +109,10 @@ class App extends Component {
       hek.classList.add("row")
     }
   }
+updateSequencer(column) {
+	console.log(column);
+}
+
 
 render() {
     return (
@@ -243,7 +259,9 @@ render() {
         <button onClick={this.playSequence}>play</button>
 		<button onClick={this.stopSequence}>stop</button>
         <p>SEQUENCER</p>
-        <div className={"transport"}></div>
+        <SequencerRow columns={this.state.columns} click={this.updateSequencer(null)}/>
+
+		<div className={"transport"}></div>
         <div className={"container"}>
           <div className={"column"}>
             <div className={"row"} onMouseDown={(e: React.FormEvent<HTMLElement>) => {this.toggleClass(e.currentTarget)}}></div>
