@@ -5,17 +5,19 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css'
 import './App.css';
 
-function SequencerCell (props) {
-	return (
-		<input type='checkbox' onClick={props.click(props.col)}></input>
-	);
-}
+// function SequencerCell (props) {
+// 	return (
+// 		<input type='checkbox' onClick={props.click(props.col)}></input>
+// 	);
+// }
 
 function SequencerRow (props) {
-	const columns = props.columns;
-	const click = props.click;
-    let range = Array.from(Array(columns), (_, i) => i + 1);
-	return (<ul>{range.map((item) => <input type='checkbox' key={item}/>)}</ul>
+  const columns = props.columns;
+
+  
+  let range = Array.from(Array(columns), (_, i) => i + 1);
+  
+  return (<ul>{range.map((item) => <input type='checkbox' key={item} onClick={() => {props.click(item)}}/>)}</ul>
 	);
 }
 
@@ -259,7 +261,7 @@ render() {
         <button onClick={this.playSequence}>play</button>
 		<button onClick={this.stopSequence}>stop</button>
         <p>SEQUENCER</p>
-        <SequencerRow columns={this.state.columns} click={this.updateSequencer(null)}/>
+      <SequencerRow columns={this.state.columns} click={(item) => {this.updateSequencer(item)}}/>
 
 		<div className={"transport"}></div>
         <div className={"container"}>
@@ -366,3 +368,4 @@ render() {
 }
 
 export default App;
+
