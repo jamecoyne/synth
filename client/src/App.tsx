@@ -6,12 +6,11 @@ import 'react-piano/dist/styles.css'
 import './App.css';
 
 class App extends Component {
-  rows = 3;
-  columns = 8;
   synth = new Tone.Synth().toMaster();
-  
   state = {
       octave: 0,
+  	  rows : 3,
+      columns : 8,
       duration: 0.2,
       envelope: {
         attack: 0.5,
@@ -23,7 +22,7 @@ class App extends Component {
         first: MidiNumbers.fromNote('c3'),
         last: MidiNumbers.fromNote('a4'),
       },
-  	  sequencer: Array(this.rows).fill(0).map(row => new Array(this.columns).fill(0))
+  	  sequencer_row: []
   };
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -37,6 +36,26 @@ class App extends Component {
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
     this.synth.envelope.set(this.state.envelope);
+  }
+
+  stopSequence = () => {
+  	Tone.Transport.stop();
+  }
+
+  playSequence = () => {
+  	console.clear();
+    console.log('nice');
+	let index = 0;
+	this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
+	Tone.Transport.scheduleRepeat((time) => {
+		let step = index % this.state.sequencer_row.length; 
+		if (this.state.sequencer_row[step] == 1) {
+				this.synth.triggerAttackRelease('C4','4n',Tone.now());
+			}	
+		index++;
+	}, "4n");
+	Tone.Transport.start();
+	
   }
 
   play = (freq) => {
@@ -219,7 +238,8 @@ render() {
             </td>
           </tr>
         </table>
-        <button onClick={this.play}>play</button>
+        <button onClick={this.playSequence}>play</button>
+		<button onClick={this.stopSequence}>stop</button>
         <p>SEQUENCER</p>
         <div className={"transport"}></div>
         <div className={"container"}>
