@@ -11,7 +11,8 @@ class App extends Component {
       octave: 0,
   	  rows : 1, //how many rows of sequencer to display
       columns : 8, //how many cols of sequencer to display
-      duration: 0.2,
+	  currentNote : 'C4', //most recent notepress on keyboard, in Hz
+	  duration: 0.2,
       envelope: {
         attack: 0.5,
         decay: 0.5,
@@ -50,8 +51,7 @@ class App extends Component {
 	Tone.Transport.scheduleRepeat((time) => {
 		let step = index % this.state.sequencer_row.length; 
 		if (this.state.sequencer_row[step] == 1) {
-				this.play('C4');
-				//this.synth.triggerAttackRelease('C4','4n',Tone.now());
+				this.play(this.state.currentNote);
 			}	
 		index++;
 	}, "4n");
@@ -79,6 +79,7 @@ class App extends Component {
 		}
 	}
 	console.log('frequency:' + freq);
+	this.setState({currentNote: freq});
     this.play(freq);
   }
 
