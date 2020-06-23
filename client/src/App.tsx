@@ -9,8 +9,8 @@ class App extends Component {
   synth = new Tone.Synth().toMaster();
   state = {
       octave: 0,
-  	  rows : 3,
-      columns : 8,
+  	  rows : 1, //how many rows of sequencer to display
+      columns : 8, //how many cols of sequencer to display
       duration: 0.2,
       envelope: {
         attack: 0.5,
@@ -50,7 +50,8 @@ class App extends Component {
 	Tone.Transport.scheduleRepeat((time) => {
 		let step = index % this.state.sequencer_row.length; 
 		if (this.state.sequencer_row[step] == 1) {
-				this.synth.triggerAttackRelease('C4','4n',Tone.now());
+				this.play('C4');
+				//this.synth.triggerAttackRelease('C4','4n',Tone.now());
 			}	
 		index++;
 	}, "4n");
