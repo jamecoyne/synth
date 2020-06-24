@@ -23,6 +23,7 @@ function SequencerRow (props) {
 
 class App extends Component {
   synth = new Tone.Synth().toMaster();
+  sequencer_row =  [] as number[];
   state = {
       octave: 0,
   	  rows : 1, //how many rows of sequencer to display
@@ -38,8 +39,7 @@ class App extends Component {
       noteRange: {
         first: MidiNumbers.fromNote('c3'),
         last: MidiNumbers.fromNote('a4'),
-      },
-  	  sequencer_row: []
+      }
   };
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -63,8 +63,8 @@ class App extends Component {
 	let index = 0;
 	this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
 	Tone.Transport.scheduleRepeat((time) => {
-		let step = index % this.state.sequencer_row.length; 
-		if (this.state.sequencer_row[step] === 1) {
+		let step = index % this.sequencer_row.length; 
+		if (this.sequencer_row[step] === 1) {
 				this.play(this.state.currentNote);
 			}	
 		index++;
@@ -111,8 +111,23 @@ class App extends Component {
       hek.classList.add("row")
     }
   }
+//updateSequencer runs whenever a checkbox in Sequencer component is clicked, which modifys the global sequencer row 
 updateSequencer(column) {
 	console.log(column);
+	if(this.sequencer_row.length > 0) {
+		console.log('flag');
+		this.sequencer_row.length = this.state.columns;
+		for(let i = 0; i < this.sequencer_row.length; i++) {
+			//must be a better way to check for empty values
+			this.sequencer_row[i] = this.sequencer_row[i] === 1 || this.sequencer_row[i] === 0? this.sequencer_row[i]:0;
+		}
+	}
+	if (this.sequencer_row[column - 1] === 1){
+		this.sequencer_row[column - 1] = 0;
+	} else {
+		this.sequencer_row[column - 1] = 1;	
+	}
+	console.log(this.sequencer_row);
 }
 
 
