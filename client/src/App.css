@@ -43,3 +43,39 @@ table {
   margin-left: auto;
   margin-right: auto;
 }
+
+.row {
+  flex-grow: 1;
+  margin: 2px;
+  background-color: var(--color-light-gray);
+  transition: background-color 0s;
+  border-style: solid;
+  border-width: 5px;
+  border-color: lightcoral;
+}
+
+.row_filled {
+  flex-grow: 1;
+  margin: 2px;
+  background-color: var(--color-teal);
+  border-style: solid;
+  border-width: 5px;
+  border-color: lightskyblue;
+}
+
+.column {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 225px;
+  display: flex;
+  border-style: solid;
+  border-width: 5px;
+  border-color: lightcoral;
+}
