@@ -3,39 +3,43 @@ import SequencerColumn from './seq_col'
 
 type tableProps = {
     len : number;
-    //possibly add 2d boolean array here?
     actualTable : boolean[][];
     callback : (colIdx, col) => void;
 }
 
-class SequencerTable extends Component<tableProps> {
+type tableState = {
+    actualTable : boolean[][]
+}
 
-    state = {
-        //???
-        columns : this.props.len,
-        //maybe hold the actual boolean table here?
-        colObjs : SequencerColumn[this.props.len],
-        accTable : this.props.actualTable
+class SequencerTable extends Component<tableProps, tableState> {
+
+    // initalize array to hold each cell with each cell as true
+    constructor(props) {
+        super(props);
+        this.state = {
+            actualTable : new Array(16).fill(new Array(12).fill(true))
+        };
     }
-    
 
     makeColumns(){
-        let range = Array.from(Array(this.state.columns), (_, i) => i);
-        this.state.colObjs = range.map((item) => <SequencerColumn idx={item} rows={this.state.accTable[item]} callback={this.props.callback}/>);
-
-        return(this.state.colObjs)
+        return(
+            this.state.actualTable.map(
+                (value, index)=> 
+             <SequencerColumn
+                idx={index}
+                size={12} 
+                callback={this.tableCallback}
+             />)
+        );
     }
 
-    /**
-     * how do I update the simple bool table from here?
-     * 
-     * callback fn passed to seq_col called here that calls callback fn passed here from App
-     * a simple calculus
-     */
-
-    tableCallback(colIdx, col)
+    tableCallback = (colIdx, col) =>
     {
-        this.props.callback(colIdx, col);
+        console.log('callback called back: ' + col + ' id ' + colIdx);
+        var tempTable = this.state.actualTable;
+        tempTable[colIdx] = col;
+        this.setState({actualTable: tempTable})
+        console.log(this.state);
     }
 
     render() {
