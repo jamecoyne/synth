@@ -44,8 +44,8 @@ class App extends Component {
     },
     //new sequencer stuff
     sequencer_cols : 16,
-    sequencer_rows : 4,
-    sequencer_table : Array<Array<boolean>>(16)
+    sequencer_rows : 12,
+    sequencer_table : new Array(16).fill(new Array(12).fill(true)),
   }
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -69,14 +69,7 @@ class App extends Component {
 	let index = 0;
 	//this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
 	Tone.Transport.scheduleRepeat((time) => {
-		let step = index % this.state.sequencer_cols; 
-    //go into the sequencer table and play notes
-    /**
-     * for each item in sequencer_table[step]
-     *     if element.filled (sequencer_table[i][j]) = true
-     *        play the note
-     *  eventually we'll need something to detect + consolidate longer notes
-     */
+    //let step = index % this.state.sequencer_cols; 
 		index++;
 	}, "4n");
 	Tone.Transport.start();
@@ -133,22 +126,6 @@ updateSequencer(column) {
 //callback function for maintaining the state here to pass to SequencerTable component
 updateSeqTable(colIdx: number, col:Array<boolean>) {
   console.log("Column updated: " + colIdx + "\nNew values: " + col.toString());
-  this.setState(state => {
-    const newSeq = this.state.sequencer_table.map((item, i) => {
-      if(i == colIdx)
-      {
-        return col;
-      } else {
-        return item;
-      }
-    });
-
-    return {
-      newSeq,
-    };
-
-  });
-
 }
 
 
@@ -294,13 +271,10 @@ render() {
             </td>
           </tr>
         </table>
-        <button onClick={this.playSequence}>play</button>
-		    <button onClick={this.stopSequence}>stop</button>
-        <p>SEQUENCER</p>
-        <SequencerRow columns={this.state.columns} click={(item) => {this.updateSequencer(item)}}/>
 
 		    <div className={"transport"}></div>
         <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable}/>
+        <button onClick={() => {console.log(this.state)}} >print state</button>
       </div>
     );
   }
