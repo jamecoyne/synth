@@ -52,6 +52,7 @@ table {
   border-style: solid;
   border-width: 5px;
   border-color: lightcoral;
+  color:white;
 }
 
 .row_filled {
@@ -61,12 +62,22 @@ table {
   border-style: solid;
   border-width: 5px;
   border-color: lightskyblue;
+  color:white;
 }
 
 .column {
   flex: 1;
   flex-direction: column;
   display: flex;
+}
+
+.column_filled {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  border-style:solid;
+  border-width: 3px;
+  border-color: lightslategray;
 }
 
 .container {
