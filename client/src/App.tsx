@@ -77,7 +77,7 @@ class App extends Component {
   }
 
   play = (freq) => {
-	this.synth.triggerAttackRelease(freq, this.state.duration);
+	this.synth.triggerAttack(freq);
   }
   
   playNode = midiNote => {
@@ -102,6 +102,7 @@ class App extends Component {
 
   stopNote = midiNote => {
     console.log('note stopped');
+    this.synth.triggerRelease();
   }
 
 //updateSequencer runs whenever a checkbox in Sequencer component is clicked, which modifys the global sequencer row 
@@ -273,7 +274,7 @@ render() {
         </table>
 
 		    <div className={"transport"}></div>
-        <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable}/>
+        <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
         <button onClick={() => {console.log(this.state)}} >print state</button>
       </div>
     );
