@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import SequencerColumn from './seq_col';
 import * as Tone from 'tone';
+import update from 'react-addons-update';
+
+type ColumnData = {
+    data : boolean[];
+    selected : boolean;
+}
 
 type tableProps = {
     len : number;
@@ -9,7 +15,7 @@ type tableProps = {
 }
 
 type tableState = {
-    actualTable : boolean[][]
+    actualTable : ColumnData[]
     seqNotes : string[]
 }
 
@@ -18,39 +24,39 @@ class SequencerTable extends Component<tableProps, tableState> {
     synth = new Tone.PolySynth(Tone.Synth).toMaster();
     running = false;
 
+
     // initalize array to hold each cell with each cell as true
     constructor(props) {
         super(props);
         this.state = {
-            actualTable : new Array(16).fill(new Array(12).fill(true)),
+            actualTable : new Array(16).fill(
+                {
+                    data: new Array(12).fill(true),
+                    selected: false
+                }
+            ),
             seqNotes : ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5']
         };
-    }
-
-    makeColumns(){
-        return(
-            this.state.actualTable.map(
-                (value, index)=> 
-             <SequencerColumn
-                idx={index}
-                size={12} 
-                callback={this.tableCallback}
-             />)
-        );
     }
 
     tableCallback = (colIdx, col) =>
     {
         console.log('callback called back: ' + col + ' id ' + colIdx);
-        var tempTable = this.state.actualTable;
-        tempTable[colIdx] = col;
-        this.setState({actualTable: tempTable})
-        console.log(this.state);
+        this.setState({
+            actualTable: update(this.state.actualTable, {[colIdx]: {data: {$set: col}}})
+        });
         this.props.callback(colIdx, col);
     }
 
     play = (freq) => {
         this.synth.triggerAttackRelease(freq, '4n');
+    }
+
+    updateColumnSelected = (colId : number, value : boolean) => {
+        if(colId < 0) colId = this.state.actualTable.length-1;
+            this.setState({
+                actualTable: update(this.state.actualTable, {[colId]: {selected: {$set: value}}})
+            });
     }
 
     playSequence = () => {
@@ -69,15 +75,12 @@ class SequencerTable extends Component<tableProps, tableState> {
         Tone.start();
         Tone.Transport.scheduleRepeat((time) => {
             step = index % this.state.actualTable.length; 
-            if(step === 0)
+            this.updateColumnSelected(step-1, false);
+            this.updateColumnSelected(step, true);
+            
+            for(let i=0; i<this.state.actualTable[step].data.length; i++)
             {
-                document.getElementById('seq_table')?.children.item(15)?.classList.remove('column_filled')
-            }
-            document.getElementById('seq_table')?.children.item(step)?.classList.add('column_filled')
-            document.getElementById('seq_table')?.children.item(step-1)?.classList.remove('column_filled')
-            for(let i=0; i<this.state.actualTable[step].length; i++)
-            {
-                if(!this.state.actualTable[step][i])
+                if(!this.state.actualTable[step].data[i])
                 {
                     notesPlayed.push(this.state.seqNotes[i]);
                 }
@@ -89,7 +92,7 @@ class SequencerTable extends Component<tableProps, tableState> {
             index++;
         }, "4n");
         Tone.Transport.on('stop', () => {
-            document.getElementById('seq_table')?.children.item(step)?.classList.remove('column_filled')
+            this.state.actualTable[step].selected = false;
             step = 0;
             index = 0;
             this.running = false;
@@ -110,7 +113,15 @@ class SequencerTable extends Component<tableProps, tableState> {
             <button onClick={this.stopSequence}>stop</button>
             <div id="seq_table" className = "container">
                 {
-                    this.makeColumns()
+                    this.state.actualTable.map(
+                        (value, index)=> {
+                            return  <SequencerColumn
+                            idx={index}
+                            size={12} 
+                            selected={value.selected}
+                            callback={this.tableCallback}
+                         />}
+                    )
                 }
             </div>
             </>
