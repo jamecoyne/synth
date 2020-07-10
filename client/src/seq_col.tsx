@@ -4,6 +4,7 @@ type colProps = {
     idx: number;
     size : number;
     callback: (colIdx, col) => void;
+    selected : boolean;
 }
 
 type colState = {
@@ -32,7 +33,7 @@ class SequencerColumn extends Component<colProps, colState> {
 
     render(){
         return(
-            <div className={"column"}>
+            <div className={`column ${this.props.selected ? 'column_filled' : ''}`}>
                 {/* render each cell using map function */}
                 {this.state.filled.map((value, index) => 
                 

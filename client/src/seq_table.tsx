@@ -1,6 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import SequencerColumn from './seq_col';
 import * as Tone from 'tone';
+import update from 'react-addons-update';
+
+type ColumnData = {
+    data : boolean[];
+    selected : boolean;
+}
 
 type tableProps = {
     len : number;
@@ -11,7 +17,7 @@ type tableProps = {
 }
 
 type tableState = {
-    actualTable : boolean[][]
+    actualTable : ColumnData[]
     seqNotes : number[]
     octave : number;
     envelope : {}
@@ -23,11 +29,17 @@ class SequencerTable extends Component<tableProps, tableState> {
     running = false;
     seqNotesFreq = [] as number[];
 
+
     // initalize array to hold each cell with each cell as true
     constructor(props) {
         super(props);
         this.state = {
-            actualTable : new Array(16).fill(new Array(12).fill(true)),
+            actualTable : new Array(16).fill(
+                {
+                    data: new Array(12).fill(true),
+                    selected: false
+                }
+            ),
             //copied midi notes from keyboard
             seqNotes : [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
                        //48,    49,   50,   51,   52,   53,   54,   55,   56,   57,   58,   59
@@ -48,25 +60,12 @@ class SequencerTable extends Component<tableProps, tableState> {
         this.seqNotesFreq = this.state.seqNotes.map((value) => {return(this.convertToFreq(value))});
     }
 
-    makeColumns(){
-        return(
-            this.state.actualTable.map(
-                (value, index)=> 
-             <SequencerColumn
-                idx={index}
-                size={12} 
-                callback={this.tableCallback}
-             />)
-        );
-    }
-
     tableCallback = (colIdx, col) =>
     {
         console.log('callback called back: ' + col + ' id ' + colIdx);
-        var tempTable = this.state.actualTable;
-        tempTable[colIdx] = col;
-        this.setState({actualTable: tempTable})
-        console.log(this.state);
+        this.setState({
+            actualTable: update(this.state.actualTable, {[colIdx]: {data: {$set: col}}})
+        });
         this.props.callback(colIdx, col);
     }
 
@@ -105,6 +104,13 @@ class SequencerTable extends Component<tableProps, tableState> {
         return(freq);
     }
 
+    updateColumnSelected = (colId : number, value : boolean) => {
+        if(colId < 0) colId = this.state.actualTable.length-1;
+            this.setState({
+                actualTable: update(this.state.actualTable, {[colId]: {selected: {$set: value}}})
+            });
+    }
+
     playSequence = () => {
 
         //stops transport from making multiple schedules
@@ -132,15 +138,15 @@ class SequencerTable extends Component<tableProps, tableState> {
                 document.getElementById('seq_table')?.children.item(this.state.actualTable.length-1)?.classList.remove('column_filled')
             }
             //marks highlighted column and unmarks the previous one
-            document.getElementById('seq_table')?.children.item(step)?.classList.add('column_filled')
-            document.getElementById('seq_table')?.children.item(step-1)?.classList.remove('column_filled')
+            this.updateColumnSelected(step-1, false);
+            this.updateColumnSelected(step, true);
             //go through current column
-            for(let i=0; i<this.state.actualTable[step].length; i++)
+            for(let i=0; i<this.state.actualTable[step].data.length; i++)
             {
-                if(!this.state.actualTable[step][i])
+                if(!this.state.actualTable[step].data[i])
                 {   
                     //so that notes played at the end of the sequence don't carry over to the beginning
-                    if(step === 0 || this.state.actualTable[step-1][i])
+                    if(step === 0 || this.state.actualTable[step-1].data[i])
                         notesPlayed.push(this.convertToFreq(this.state.seqNotes[i]));
                 } else {
                     //if the frequency isn't being played (the cell isn't toggled on), get ready to release it
@@ -164,7 +170,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         }, "16n");
         //reset everything when the stop button is pressed
         Tone.Transport.on('stop', () => {
-            document.getElementById('seq_table')?.children.item(step)?.classList.remove('column_filled')
+            this.updateColumnSelected(step, false);
             step = 0;
             index = 0;
             this.running = false;
@@ -188,7 +194,15 @@ class SequencerTable extends Component<tableProps, tableState> {
             <button onClick={this.stopSequence}>stop</button>
             <div id="seq_table" className = "container">
                 {
-                    this.makeColumns()
+                    this.state.actualTable.map(
+                        (value, index)=> {
+                            return  <SequencerColumn
+                            idx={index}
+                            size={12} 
+                            selected={value.selected}
+                            callback={this.tableCallback}
+                         />}
+                    )
                 }
             </div>
             </>
