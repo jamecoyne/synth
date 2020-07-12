@@ -5,25 +5,13 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css'
 import './App.css';
 import SequencerTable from './seq_table'
+import 'file-saver';
+import FileUploader from 'file-uploader-js';
 
-// function SequencerCell (props) {
-// 	return (
-// 		<input type='checkbox' onClick={props.click(props.col)}></input>
-// 	);
-// }
-
-function SequencerRow (props) {
-  const columns = props.columns;
-
-  
-  let range = Array.from(Array(columns), (_, i) => i + 1);
-  
-  return (<ul>{range.map((item) => <input type='checkbox' key={item} onClick={() => {props.click(item)}}/>)}</ul>
-	);
-}
 
 class App extends Component {
   synth = new Tone.Synth().toMaster();
+  
   sequencer_row =  [] as number[];
   sequencer_table = [] as Array<any>; 
   state = {
@@ -54,8 +42,16 @@ class App extends Component {
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
   
-  
+  saveState() {
+    var FileSaver = require('file-saver');
+    let state = JSON.stringify(this.state);
+    var blob = new Blob([state], {type: "text/plain;charset=utf-8"});
+    FileSaver.saveAs(blob, "state.json");
+  }
 
+  loadState = (file) => {
+    this.setState(JSON.parse(file));
+  }
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
     this.synth.envelope.set(this.state.envelope);
@@ -276,6 +272,16 @@ render() {
 		    <div className={"transport"}></div>
         <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
         <button onClick={() => {console.log(this.state)}} >print state</button>
+        <button onClick={this.saveState.bind(this)}>Save State</button>
+        <FileUploader
+          accept=".json"
+          title="Load State"
+          uploadedFileCallback={e => {
+            this.loadState.bind(this)(e);
+          }}
+        />
+        
+
       </div>
     );
   }
