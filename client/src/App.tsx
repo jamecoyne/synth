@@ -51,6 +51,8 @@ class App extends Component {
 
   loadState = (file) => {
     this.setState(JSON.parse(file));
+    this.setState({ state: this.state });
+    //this.forceUpdate();
   }
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
@@ -101,24 +103,7 @@ class App extends Component {
     this.synth.triggerRelease();
   }
 
-//updateSequencer runs whenever a checkbox in Sequencer component is clicked, which modifys the global sequencer row 
-updateSequencer(column) {
-	console.log(column);
-	if(this.sequencer_row.length > 0) {
-		console.log('flag');
-		this.sequencer_row.length = this.state.columns;
-		for(let i = 0; i < this.sequencer_row.length; i++) {
-			//must be a better way to check for empty values
-			this.sequencer_row[i] = this.sequencer_row[i] === 1 || this.sequencer_row[i] === 0? this.sequencer_row[i]:0;
-		}
-	}
-	if (this.sequencer_row[column - 1] === 1){
-		this.sequencer_row[column - 1] = 0;
-	} else {
-		this.sequencer_row[column - 1] = 1;	
-	}
-	console.log(this.sequencer_row);
-}
+
 
 //callback function for maintaining the state here to pass to SequencerTable component
 updateSeqTable(colIdx: number, col:Array<boolean>) {
@@ -280,8 +265,6 @@ render() {
             this.loadState.bind(this)(e);
           }}
         />
-        
-
       </div>
     );
   }
