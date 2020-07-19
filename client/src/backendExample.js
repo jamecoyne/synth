@@ -23,13 +23,14 @@ const BackendExample = () =>{
     };
 
     const handleSubmit = async e => {
+        console.log(document.querySelector('#textBox').value);
         e.preventDefault();
         const response = await fetch('/api/world', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ post: this.state.post }),
+          body: JSON.stringify({ post: document.querySelector('#textBox').value }),
         });
         const body = await response.text();
         setResState({ responseToPost: body })
@@ -43,6 +44,7 @@ const BackendExample = () =>{
             <strong>Post to Server:</strong>
           </p>
           <input
+            id = {'textBox'}
             type={"text"}
             value={resState.post}
             onChange={e => setResState({ post: e.target.value })}

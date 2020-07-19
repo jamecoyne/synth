@@ -6,24 +6,8 @@ import 'react-piano/dist/styles.css'
 import './App.css';
 import SequencerTable from './seq_table'
 
-// function SequencerCell (props) {
-// 	return (
-// 		<input type='checkbox' onClick={props.click(props.col)}></input>
-// 	);
-// }
-
-function SequencerRow (props) {
-  const columns = props.columns;
-
-  
-  let range = Array.from(Array(columns), (_, i) => i + 1);
-  
-  return (<ul>{range.map((item) => <input type='checkbox' key={item} onClick={() => {props.click(item)}}/>)}</ul>
-	);
-}
-
 class App extends Component {
-  synth = new Tone.Synth().toMaster();
+  synth = new Tone.PolySynth(Tone.Synth).toMaster();
   sequencer_row =  [] as number[];
   sequencer_table = [] as Array<any>; 
   state = {
@@ -58,22 +42,7 @@ class App extends Component {
 
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
-    this.synth.envelope.set(this.state.envelope);
-  }
-
-  stopSequence = () => {
-  	Tone.Transport.stop();
-  }
-
-  playSequence = () => {
-	let index = 0;
-	//this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
-	Tone.Transport.scheduleRepeat((time) => {
-    //let step = index % this.state.sequencer_cols; 
-		index++;
-	}, "4n");
-	Tone.Transport.start();
-	
+    this.synth.set({envelope : this.state.envelope});
   }
 
   play = (freq) => {
@@ -102,31 +71,70 @@ class App extends Component {
 
   stopNote = midiNote => {
     console.log('note stopped');
-    this.synth.triggerRelease();
+    midiNote =   0.0 + midiNote
+    console.log('midiNote: ' + midiNote);
+	  let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
+	  //applying octave to freq
+	  if(this.state.octave > 0){
+		  for(let i=0; i < this.state.octave; i++){
+			  freq = freq * 2;
+		  }
+	  }else if(this.state.octave < 0){
+		    for(let i=0; i > this.state.octave; i--){
+			    freq = freq / 2;
+		    }
+	  }
+  	//console.log('frequency:' + freq);
+	  //this.setState({currentNote: freq});
+    this.synth.triggerRelease(freq);
   }
-
-//updateSequencer runs whenever a checkbox in Sequencer component is clicked, which modifys the global sequencer row 
-updateSequencer(column) {
-	console.log(column);
-	if(this.sequencer_row.length > 0) {
-		console.log('flag');
-		this.sequencer_row.length = this.state.columns;
-		for(let i = 0; i < this.sequencer_row.length; i++) {
-			//must be a better way to check for empty values
-			this.sequencer_row[i] = this.sequencer_row[i] === 1 || this.sequencer_row[i] === 0? this.sequencer_row[i]:0;
-		}
-	}
-	if (this.sequencer_row[column - 1] === 1){
-		this.sequencer_row[column - 1] = 0;
-	} else {
-		this.sequencer_row[column - 1] = 1;	
-	}
-	console.log(this.sequencer_row);
-}
 
 //callback function for maintaining the state here to pass to SequencerTable component
 updateSeqTable(colIdx: number, col:Array<boolean>) {
   console.log("Column updated: " + colIdx + "\nNew values: " + col.toString());
+}
+
+//todo : remove hard code, attach these methods to instrument save/load button
+//saves instrument preset
+saveInstrument = async () => {
+  const response = await fetch('/api/saveinst', {
+      method: 'POST',
+      headers : {
+          'Content-type' : 'application/json',
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          name : 'my_instrument',
+          inst : JSON.stringify({
+              octave : this.state.octave,
+              oscillator : this.synth.get().oscillator,
+              envelope : this.synth.get().envelope
+          })
+      })
+  });
+  const body = await response.text();
+  console.log(body);
+}
+
+//load instrument preset
+loadInstrument = async (inst_name) => {
+  const response = await fetch('/api/loadinst', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          preset_name : 'my_instrument'
+      })
+  });
+  const body = JSON.parse(await response.text());
+  this.synth.set(body.oscillator);
+  this.synth.set(body.envelope);
+  this.setState({octave : body.octave});
+  //reflect change in the sliders
+  
+  console.log('Instrument loaded!');
 }
 
 
@@ -141,7 +149,7 @@ render() {
           disabled={false}
           keyboardShortcuts={this.keyboardShortcuts}
         />
-        {/* <BackendExample/> */}
+        
         TONEJS
         <br/>
         <table>
@@ -276,10 +284,10 @@ render() {
 		    <div className={"transport"}></div>
         <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
         <button onClick={() => {console.log(this.state)}} >print state</button>
+        {/* {<BackendExample/>} */}
       </div>
     );
   }
 }
 
 export default App;
-

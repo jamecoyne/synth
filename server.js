@@ -1,21 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var mongo = require('mongodb');
+var mongoose = require('mongoose');
+var Users = require('./src/database_js/users/user');
+const { hasOnlyExpressionInitializer } = require('typescript');
 
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/testDatabase";
+//var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb+srv://kerleyc:Compsci301a!@synthcluster.egam4.mongodb.net/synthbase?retryWrites=true&w=majority";
 
-MongoClient.connect(url, function(err, db) {
-    try{
-        var dbo = db.db("testCollection");
-        dbo.createCollection("testCollection", function(err, res) {
-          console.log("Collection created!");
-          db.close();
-        });
-    }
-    catch{
-        console.error('error connecting to database');
-    }
+mongoose.connect(url, {
+  useNewUrlParser : true,
+  useFindAndModify : true,
+  useUnifiedTopology : true,
+  useCreateIndex : true,
+});
+
+var database = mongoose.connection;
+
+database.once('open', async () => {
+  console.log('Connected to database');
+  database.useDb('synthbase');
+});
+
+database.on('error', () => {
+    console.log('Error connecting to database!');
 });
 
 const app = express();
@@ -24,15 +32,50 @@ const port = process.env.PORT || 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
+//save a sequence
+app.post('/api/tbsave', async (req, res) => {
+  console.log('Saving table...');
+  //assemble table here?
+  var jane = await Users.findOne({username : req.body.username});
+  jane.addSequence({
+    name : req.body.seq_name,
+    table : req.body.seq_table
+  })
+  res.send('Table saved!');
 });
 
-app.post('/api/world', (req, res) => {
-  console.log(req.body);
-  res.send(
-    `I received your POST request. This is what you sent me: ${req.body.post}`,
-  );
+//create a user
+app.post('/api/createuser', async (req, res) => {
+  console.log('Creating user...');
+  Users.create({
+    username: req.body.un,
+    password: '12345'
+  });
+  //pretend to send a confirmation email w/ password reset link or whatever
+  res.send('User successfully created!')
 });
+
+//save an instrument preset
+app.post('/api/saveinst', async (req, res) => {
+  console.log('Saving instrument...');
+  var user = await Users.findOne({username : req.body.username});
+  console.log('Instrument being saved : ');
+  user.addInstPreset(req.body);
+  res.send('Instrument saved!')
+});
+
+//load a sequence
+app.post('/api/tbload', async (req, res) => {
+  console.log('Finding sequence...')
+  var seq = await Users.findOne({username : req.body.username});
+  res.send(seq.sequences.get(req.body.seq_name));
+});
+
+//load an instrument preset
+app.post('/api/loadinst', async (req, res) => {
+  console.log('Finding instrument preset...')
+  var inst = await Users.findOne({username : req.body.username}).inst_presets.get(req.body.seq_name);
+  res.send(inst);
+})
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

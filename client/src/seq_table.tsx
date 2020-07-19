@@ -13,14 +13,24 @@ type tableProps = {
     actualTable : boolean[][];
     callback : (colIdx, col) => void;
     octave : number;
-    envelope : {};
+    envelope : {
+        attack : number,
+        decay : number,
+        sustain : number,
+        release : number
+    };
 }
 
 type tableState = {
     actualTable : ColumnData[]
     seqNotes : number[]
     octave : number;
-    envelope : {}
+    envelope : {
+        attack : number,
+        decay : number,
+        sustain : number,
+        release : number
+    }
 }
 
 class SequencerTable extends Component<tableProps, tableState> {
@@ -86,7 +96,7 @@ class SequencerTable extends Component<tableProps, tableState> {
 
     //for factoring in octave in frequency conversion (so that we can play accidentals)
     convertToFreq(midiNote) {
-        console.log(this.state.octave)
+        //console.log(this.state.octave)
         midiNote =   0.0 + midiNote
         //console.log('midiNote: ' + midiNote);
         let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
@@ -187,6 +197,91 @@ class SequencerTable extends Component<tableProps, tableState> {
         Tone.Transport.stop();
     }
 
+    //extremely impromptu function for saving the contents of the table to the database
+    saveTable = async () => {
+        const response = await fetch('/api/tbsave', {
+            method: 'POST',
+            headers : {
+                'Content-type' : 'application/json',
+            },
+            body : JSON.stringify({
+                username : 'janesmith',
+                seq_name : 'my_sequence',
+                seq_table : this.getRawTable()
+            })
+        });
+        const body = await response.text();
+        console.log(body);
+    }
+
+    //turns the table into a 2d array of booleans so that I don't have to mess with typing issues in the server
+    getRawTable(){
+        let rawTable = Array<boolean[]>(this.state.actualTable.length);
+        for(let i = 0; i < this.state.actualTable.length; i++)
+        {
+            rawTable[i] = this.state.actualTable[i].data;
+        }
+        return rawTable;
+    }
+
+    //saves instrument preset
+    saveInstrument = async () => {
+        const response = await fetch('/api/saveinst', {
+            method: 'POST',
+            headers : {
+                'Content-type' : 'application/json',
+            },
+            body : JSON.stringify({
+                username : 'janesmith',
+                name : 'my_instrument',
+                inst : JSON.stringify({
+                    oscillator : this.synth.get().oscillator,
+                    envelope : this.synth.get().envelope
+                })
+            })
+        });
+        const body = await response.text();
+        console.log(body);
+    }
+
+    loadInstrument = async (inst_name) => {
+        const response = await fetch('/api/loadinst', {
+            method : 'POST',
+            headers : {
+                'Content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                username : 'janesmith',
+                preset_name : 'my_instrument'
+            })
+        });
+        const body = JSON.parse(await response.text());
+        this.synth.set(body);
+        //this does not reflect in the sliders
+        console.log('Instrument loaded!');
+    }
+
+    loadTable = async () => {
+        const response = await fetch('/api/tbload', {
+            method : 'POST',
+            headers : {
+                'Content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                username : 'janesmith',
+                seq_name : 'my_sequence'
+            })
+        });
+        const body = await response.json();
+        console.log(body);
+        //set all the sequencer cells
+        for(let i = 0; i < 16; i++){
+            this.tableCallback(i, body[i]);
+        }
+        
+        console.log('Sequence loaded!');
+    }
+
     render() {
         return(
             <>
@@ -199,12 +294,16 @@ class SequencerTable extends Component<tableProps, tableState> {
                             return  <SequencerColumn
                             idx={index}
                             size={12} 
+                            actualColumn={this.state.actualTable[index].data}
                             selected={value.selected}
                             callback={this.tableCallback}
                          />}
                     )
                 }
             </div>
+            <button onClick={this.saveInstrument}>save instrument</button>
+            <button onClick={this.saveTable}>save sequence</button>
+            <button onClick={this.loadTable}>load sequence</button>
             </>
         )
     }

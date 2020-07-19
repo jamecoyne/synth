@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 type colProps = {
     idx: number;
     size : number;
+    actualColumn : boolean[]
     callback: (colIdx, col) => void;
     selected : boolean;
 }
@@ -18,6 +19,14 @@ class SequencerColumn extends Component<colProps, colState> {
         super(props);
         this.state = {
             filled: (new Array(props.size)).fill(true),
+        }
+    }
+
+    componentDidUpdate(props)
+    {
+        if(this.props.actualColumn !== this.state.filled)
+        {
+            this.setState({filled: this.props.actualColumn});
         }
     }
 
