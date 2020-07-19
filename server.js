@@ -6,7 +6,7 @@ var Users = require('./src/database_js/users/user');
 const { hasOnlyExpressionInitializer } = require('typescript');
 
 //var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb+srv://kerleyc:Compsci301a!@synthcluster.egam4.mongodb.net/synthbase?retryWrites=true&w=majority";
+var url = "";
 
 mongoose.connect(url, {
   useNewUrlParser : true,

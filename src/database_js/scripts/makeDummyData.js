@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 
 (async () => {
     //connect to database
-    var url = "mongodb+srv://kerleyc:Compsci301a!@synthcluster.egam4.mongodb.net/synthbase?retryWrites=true&w=majority";
+    var url = "";
 
     mongoose.connect(url, {
         useNewUrlParser : true,
