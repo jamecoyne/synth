@@ -30,6 +30,7 @@ class App extends Component {
     sequencer_cols : 16,
     sequencer_rows : 12,
     sequencer_table : new Array(16).fill(new Array(12).fill(true)),
+    currUser : String,
   }
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -94,7 +95,7 @@ updateSeqTable(colIdx: number, col:Array<boolean>) {
   console.log("Column updated: " + colIdx + "\nNew values: " + col.toString());
 }
 
-//todo : remove hard code, attach these methods to instrument save/load button
+//todo : remove hard code, attach these methods to instrument save/load button as well as register/login
 //saves instrument preset
 saveInstrument = async () => {
   const response = await fetch('/api/saveinst', {
@@ -135,6 +136,62 @@ loadInstrument = async (inst_name) => {
   //reflect change in the sliders
   
   console.log('Instrument loaded!');
+}
+
+//create user
+register = async () => {
+  const response = await fetch('/api/createuser', {
+    method : 'POST',
+    headers : {
+      'Content-type' : 'application/json'
+    },
+    body : JSON.stringify({
+      un : 'newUsername',
+      pw : 'newPassword'
+    })
+  });
+  const body = await response.text();
+  switch (body) {
+    case 'Username taken!' : {
+      //do something with UI
+      break;
+    }
+    case 'User successfully created!' : {
+      this.setState({currUser : 'newUsername'});
+      break;
+    }
+  }
+  console.log(body);
+}
+
+//log in as user
+login = async () => {
+  const response = await fetch('/api/login', {
+    method : 'POST',
+    headers : {
+      'Content-type' : 'application/json'
+    },
+    body : JSON.stringify({
+      un : 'janesmith',
+      pw : '12345'
+    })
+  });
+  const body = await response.text();
+  switch (body) {
+    case 'Login successful!' : {
+      this.setState({currUser : 'janesmith'});
+      break;
+    }
+    case 'Password incorrect!' : {
+      //do something with the login UI
+      break;
+    }
+    case 'User does not exist' : {
+      //do something with the login UI
+      break;
+    }
+  }
+  console.log('Login successful!');
 }
 
 
@@ -284,6 +341,8 @@ render() {
 		    <div className={"transport"}></div>
         <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
         <button onClick={() => {console.log(this.state)}} >print state</button>
+        <button onClick={this.login}>login</button>
+        <button onClick={this.register}>register</button>
         {/* {<BackendExample/>} */}
       </div>
     );

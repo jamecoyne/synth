@@ -4,6 +4,7 @@ var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var Users = require('./src/database_js/users/user');
 const { hasOnlyExpressionInitializer } = require('typescript');
+const { response } = require('express');
 
 //var MongoClient = require('mongodb').MongoClient;
 var url = "";
@@ -47,12 +48,37 @@ app.post('/api/tbsave', async (req, res) => {
 //create a user
 app.post('/api/createuser', async (req, res) => {
   console.log('Creating user...');
-  Users.create({
-    username: req.body.un,
-    password: '12345'
-  });
-  //pretend to send a confirmation email w/ password reset link or whatever
-  res.send('User successfully created!')
+  //make sure the username isn't taken
+  var curruser = Users.findOne({username : req.body.un});
+  if(curruser != undefined)
+  {
+    Users.create({
+      username: req.body.un,
+      password: req.body.pw
+    });
+    //pretend to send a confirmation email w/
+    res.send('User successfully created!');
+  } else {
+    res.send('Username taken!');
+  }
+});
+
+//login
+app.post('/api/login', async (req, res) => {
+  console.log('Logging in as ' + req.body.un);
+  var curruser = Users.findOne({username : req.body.un});
+  if(curruser == undefined)
+  {
+    res.send('User does not exist');
+  }
+  if(curruser.password == req.password)
+  {
+    console.log('Login successful!');
+    res.send('Login successful!');
+  } else {
+    console.log('Password incorrect!')
+    res.send('Password incorrect!');
+  }
 });
 
 //save an instrument preset

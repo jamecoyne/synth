@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 //schema definition
 var userSchema = new mongoose.Schema({
     username: {type : String, required : true, unique : true},
-    password: {type : String, required : true, default : '12345'},
+    password: {type : String, required : true},
     inst_presets: {
         type : Map,
         of : String,
