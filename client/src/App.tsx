@@ -5,9 +5,13 @@ import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css'
 import './App.css';
 import SequencerTable from './seq_table'
+import 'file-saver';
+import FileUploader from 'file-uploader-js';
+
 
 class App extends Component {
   synth = new Tone.PolySynth(Tone.Synth).toMaster();
+
   sequencer_row =  [] as number[];
   sequencer_table = [] as Array<any>; 
   state = {
@@ -39,8 +43,18 @@ class App extends Component {
     keyboardConfig: KeyboardShortcuts.HOME_ROW,
   });
   
-  
+  saveState() {
+    var FileSaver = require('file-saver');
+    let state = JSON.stringify(this.state);
+    var blob = new Blob([state], {type: "text/plain;charset=utf-8"});
+    FileSaver.saveAs(blob, "state.json");
+  }
 
+  loadState = (file) => {
+    this.setState(JSON.parse(file));
+    this.setState({ state: this.state });
+    //this.forceUpdate();
+  }
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
     this.synth.set({envelope : this.state.envelope});
@@ -89,6 +103,7 @@ class App extends Component {
 	  //this.setState({currentNote: freq});
     this.synth.triggerRelease(freq);
   }
+
 
 //callback function for maintaining the state here to pass to SequencerTable component
 updateSeqTable(colIdx: number, col:Array<boolean>) {
@@ -343,7 +358,14 @@ render() {
         <button onClick={() => {console.log(this.state)}} >print state</button>
         <button onClick={this.login}>login</button>
         <button onClick={this.register}>register</button>
-        {/* {<BackendExample/>} */}
+        <button onClick={this.saveState.bind(this)}>Save State</button>
+        <FileUploader
+          accept=".json"
+          title="Load State"
+          uploadedFileCallback={e => {
+            this.loadState.bind(this)(e);
+          }}
+        />
       </div>
     );
   }
