@@ -10,8 +10,8 @@ import FileUploader from 'file-uploader-js';
 
 
 class App extends Component {
-  synth = new Tone.Synth().toMaster();
-  
+  synth = new Tone.PolySynth(Tone.Synth).toMaster();
+
   sequencer_row =  [] as number[];
   sequencer_table = [] as Array<any>; 
   state = {
@@ -34,6 +34,7 @@ class App extends Component {
     sequencer_cols : 16,
     sequencer_rows : 12,
     sequencer_table : new Array(16).fill(new Array(12).fill(true)),
+    currUser : String,
   }
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -56,22 +57,7 @@ class App extends Component {
   }
   componentDidUpdate(props){
     // set the synthesizer's envelope everytime a slider is changed
-    this.synth.envelope.set(this.state.envelope);
-  }
-
-  stopSequence = () => {
-  	Tone.Transport.stop();
-  }
-
-  playSequence = () => {
-	let index = 0;
-	//this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
-	Tone.Transport.scheduleRepeat((time) => {
-    //let step = index % this.state.sequencer_cols; 
-		index++;
-	}, "4n");
-	Tone.Transport.start();
-	
+    this.synth.set({envelope : this.state.envelope});
   }
 
   play = (freq) => {
@@ -100,14 +86,127 @@ class App extends Component {
 
   stopNote = midiNote => {
     console.log('note stopped');
-    this.synth.triggerRelease();
+    midiNote =   0.0 + midiNote
+    console.log('midiNote: ' + midiNote);
+	  let freq = Math.pow(2.0, (midiNote-69.0)/ 12.0) * 440.0;
+	  //applying octave to freq
+	  if(this.state.octave > 0){
+		  for(let i=0; i < this.state.octave; i++){
+			  freq = freq * 2;
+		  }
+	  }else if(this.state.octave < 0){
+		    for(let i=0; i > this.state.octave; i--){
+			    freq = freq / 2;
+		    }
+	  }
+  	//console.log('frequency:' + freq);
+	  //this.setState({currentNote: freq});
+    this.synth.triggerRelease(freq);
   }
-
 
 
 //callback function for maintaining the state here to pass to SequencerTable component
 updateSeqTable(colIdx: number, col:Array<boolean>) {
   console.log("Column updated: " + colIdx + "\nNew values: " + col.toString());
+}
+
+//todo : remove hard code, attach these methods to instrument save/load button as well as register/login
+//saves instrument preset
+saveInstrument = async () => {
+  const response = await fetch('/api/saveinst', {
+      method: 'POST',
+      headers : {
+          'Content-type' : 'application/json',
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          name : 'my_instrument',
+          inst : JSON.stringify({
+              octave : this.state.octave,
+              oscillator : this.synth.get().oscillator,
+              envelope : this.synth.get().envelope
+          })
+      })
+  });
+  const body = await response.text();
+  console.log(body);
+}
+
+//load instrument preset
+loadInstrument = async (inst_name) => {
+  const response = await fetch('/api/loadinst', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          preset_name : 'my_instrument'
+      })
+  });
+  const body = JSON.parse(await response.text());
+  this.synth.set(body.oscillator);
+  this.synth.set(body.envelope);
+  this.setState({octave : body.octave});
+  //reflect change in the sliders
+  
+  console.log('Instrument loaded!');
+}
+
+//create user
+register = async () => {
+  const response = await fetch('/api/createuser', {
+    method : 'POST',
+    headers : {
+      'Content-type' : 'application/json'
+    },
+    body : JSON.stringify({
+      un : 'newUsername',
+      pw : 'newPassword'
+    })
+  });
+  const body = await response.text();
+  switch (body) {
+    case 'Username taken!' : {
+      //do something with UI
+      break;
+    }
+    case 'User successfully created!' : {
+      this.setState({currUser : 'newUsername'});
+      break;
+    }
+  }
+  console.log(body);
+}
+
+//log in as user
+login = async () => {
+  const response = await fetch('/api/login', {
+    method : 'POST',
+    headers : {
+      'Content-type' : 'application/json'
+    },
+    body : JSON.stringify({
+      un : 'janesmith',
+      pw : '12345'
+    })
+  });
+  const body = await response.text();
+  switch (body) {
+    case 'Login successful!' : {
+      this.setState({currUser : 'janesmith'});
+      break;
+    }
+    case 'Password incorrect!' : {
+      //do something with the login UI
+      break;
+    }
+    case 'User does not exist' : {
+      //do something with the login UI
+      break;
+    }
+  }
+  console.log('Login successful!');
 }
 
 
@@ -122,7 +221,7 @@ render() {
           disabled={false}
           keyboardShortcuts={this.keyboardShortcuts}
         />
-        {/* <BackendExample/> */}
+        
         TONEJS
         <br/>
         <table>
@@ -257,6 +356,8 @@ render() {
 		    <div className={"transport"}></div>
         <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
         <button onClick={() => {console.log(this.state)}} >print state</button>
+        <button onClick={this.login}>login</button>
+        <button onClick={this.register}>register</button>
         <button onClick={this.saveState.bind(this)}>Save State</button>
         <FileUploader
           accept=".json"
@@ -271,4 +372,3 @@ render() {
 }
 
 export default App;
-
