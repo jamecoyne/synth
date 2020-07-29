@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import * as Tone from "tone";
 import BackendExample from "./backendExample";
 import { Piano, KeyboardShortcuts, MidiNumbers } from "react-piano";
-import "./piano.css";
+import "react-piano/dist/styles.css";
+// import "./piano.css";
 import "./App.css";
 import SequencerTable from "./seq_table";
+import Filter from "./Filter";
 import {
   Navbar,
   Nav,
@@ -13,6 +15,7 @@ import {
   Row,
   Col,
   Form,
+  ButtonGroup,
 } from "react-bootstrap";
 
 class App extends Component {
@@ -140,12 +143,21 @@ class App extends Component {
           </Navbar.Collapse>
         </Navbar>
         <Container fluid>
-          <Row style={{ border: "1px solid blue", height: "57vh" }}>
-            <Col style={{ border: "1px solid red" }}>
+          <Row>
+            <Col style={{ borderRight: "1px solid white", height: "92vh" }}>
               Synthesizer
               <Row>
-                <Col style={{ border: "1px solid green" }}>
+                <Col>
                   <Form>
+                    <Form.Group controlId="">
+                      <ButtonGroup aria-label="Basic example">
+                        <Button variant="secondary">Square</Button>
+                        <Button variant="secondary">Sin</Button>
+                        <Button variant="secondary">Saw</Button>
+                        <Button variant="secondary">Triangle</Button>
+                      </ButtonGroup>
+                    </Form.Group>
+
                     <Form.Group controlId="formBasicRange">
                       <Form.Label>Octave</Form.Label>
                       <Form.Control
@@ -179,9 +191,11 @@ class App extends Component {
                     </Form.Group>
                   </Form>
                 </Col>
-                <Col style={{ border: "1px solid green" }}>
-                  <Row style={{ border: "1px solid purple" }}>Filter</Row>
-                  <Row style={{ border: "1px solid purple" }}>
+                <Col>
+                  <Row>
+                    <Filter />
+                  </Row>
+                  <Row>
                     Envelope
                     <Form>
                       <Form.Label>Attack</Form.Label>
@@ -249,34 +263,31 @@ class App extends Component {
                 </Col>
               </Row>
             </Col>
-            <Col style={{ border: "1px solid red", background: "black" }}>
+            <Col>
               Sequencer
               <Row>
-                <Col xs>
-                  <Piano
-                    noteRange={this.state.noteRange}
-                    width={600}
-                    playNote={this.playNode}
-                    stopNote={this.stopNote}
-                    disabled={false}
-                    keyboardShortcuts={this.keyboardShortcuts}
-                  />
-                </Col>
-                <Col md="auto">
-                  <SequencerTable
-                    len={this.state.sequencer_cols}
-                    actualTable={this.sequencer_table}
-                    callback={this.updateSeqTable}
-                    octave={this.state.octave}
-                    envelope={this.state.envelope}
-                  />
-                </Col>
+                {/* <Piano
+                  style={{ border: "1px solid blue" }}
+                  noteRange={this.state.noteRange}
+                  playNote={this.playNode}
+                  stopNote={this.stopNote}
+                  disabled={false}
+                  keyboardShortcuts={this.keyboardShortcuts}
+                /> */}
+
+                <SequencerTable
+                  len={this.state.sequencer_cols}
+                  actualTable={this.sequencer_table}
+                  callback={this.updateSeqTable}
+                  octave={this.state.octave}
+                  envelope={this.state.envelope}
+                />
               </Row>
             </Col>
           </Row>
-          <Row style={{ border: "1px solid blue", height: "35vh" }}>
+          {/* <Row style={{ border: "1px solid blue", height: "35vh" }}>
             Recording component goes here!
-          </Row>
+          </Row> */}
         </Container>
       </div>
     );

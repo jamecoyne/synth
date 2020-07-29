@@ -59,6 +59,24 @@ class SequencerTable extends Component<tableProps, tableState> {
     });
   }
 
+  numberToNote = (number) => {
+    const scale = [
+      "C",
+      "C#",
+      "D",
+      "D#",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "G#",
+      "A",
+      "A#",
+      "B",
+    ];
+    return scale[number % 12];
+  };
+
   tableCallback = (colIdx, col) => {
     console.log("callback called back: " + col + " id " + colIdx);
     this.setState({
@@ -191,20 +209,30 @@ class SequencerTable extends Component<tableProps, tableState> {
       <>
         <button onClick={this.playSequence}>play</button>
         <button onClick={this.stopSequence}>stop</button>
-        {/* <div id="seq_table" className = "container">
-                {
-                    this.state.actualTable.map(
-                        (value, index)=> {
-                            return  <SequencerColumn
-                            idx={index}
-                            size={12} 
-                            selected={value.selected}
-                            callback={this.tableCallback}
-                         />}
-                    )
-                }
-            </div> */}
         <Container>
+          <Col style={{ marginRight: "10px", width: "10vw" }}>
+            {this.state.seqNotes.map((value) => {
+              const note = this.numberToNote(value);
+              return (
+                <Row
+                  className={"seq_cell"}
+                  onMouseDown={() => {
+                    this.synth.triggerAttack(value);
+                  }}
+                  onMouseUp={() => {
+                    this.synth.triggerRelease(value);
+                  }}
+                  onMouseOut={() => {
+                    this.synth.triggerRelease(value);
+                  }}
+                >
+                  <div className={"text-center"}>
+                    <p>{note}</p>
+                  </div>
+                </Row>
+              );
+            })}
+          </Col>
           {this.state.actualTable.map((value, index) => {
             return (
               <SequencerColumn
