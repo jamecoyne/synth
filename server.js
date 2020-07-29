@@ -91,16 +91,19 @@ app.post("/api/saveinst", async (req, res) => {
 app.post("/api/tbload", async (req, res) => {
   console.log("Finding sequence...");
   var seq = await Users.findOne({ username: req.body.username });
+  if(seq === null)
+  {
+    console.log('User doesnt exist!');
+    return;
+  }
   res.send(seq.sequences.get(req.body.seq_name));
 });
 
 //load an instrument preset
 app.post("/api/loadinst", async (req, res) => {
   console.log("Finding instrument preset...");
-  var inst = await Users.findOne({
-    username: req.body.username,
-  }).inst_presets.get(req.body.seq_name);
-  res.send(inst);
+  var inst = await Users.findOne({username : req.body.username});
+  res.send(inst.inst_presets.get(req.body.preset_name));
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

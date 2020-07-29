@@ -166,7 +166,7 @@ class SequencerTable extends Component<tableProps, tableState> {
     console.log(body);
   };
 
-  loadInstrument = async (inst_name) => {
+  loadInstrument = async () => {
     const response = await fetch("/api/loadinst", {
       method: "POST",
       headers: {
@@ -177,7 +177,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         preset_name: "my_instrument",
       }),
     });
-    const body = JSON.parse(await response.text());
+    const body = await response.json();
     this.synth.set(body);
     //this does not reflect in the sliders
     console.log("Instrument loaded!");
@@ -192,10 +192,10 @@ class SequencerTable extends Component<tableProps, tableState> {
       body: JSON.stringify({
         username: "janesmith",
         name: "my_instrument",
-        inst: JSON.stringify({
+        inst: {
           oscillator: this.synth.get().oscillator,
           envelope: this.synth.get().envelope,
-        }),
+        },
       }),
     });
     const body = await response.text();
