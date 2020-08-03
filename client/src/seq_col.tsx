@@ -22,14 +22,6 @@ class SequencerColumn extends Component<colProps, colState> {
         }
     }
 
-    componentDidUpdate(props)
-    {
-        if(this.props.actualColumn !== this.state.filled)
-        {
-            this.setState({filled: this.props.actualColumn});
-        }
-    }
-
     toggleClass(hek : number) {
         // create temp var to hold state in & update new change
         var tempState = this.state.filled;
@@ -38,13 +30,14 @@ class SequencerColumn extends Component<colProps, colState> {
         this.setState({filled: tempState})
         // call callback
         this.props.callback(this.props.idx, this.state.filled);
+        //console.log('Cell updated at ' + this.props.idx + ', ' + hek);
       }
 
     render(){
         return(
             <div className={`column ${this.props.selected ? 'column_filled' : ''}`}>
                 {/* render each cell using map function */}
-                {this.state.filled.map((value, index) => 
+                {this.props.actualColumn.map((value, index) => 
                 
                     <div 
                         //conditionally render filled or not 
