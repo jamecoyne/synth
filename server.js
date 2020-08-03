@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var Users = require('./src/database_js/users/user');
-const { hasOnlyExpressionInitializer } = require('typescript');
 const { response } = require('express');
 const { json } = require('body-parser');
 
@@ -95,7 +94,7 @@ app.post('/api/saveinst', async (req, res) => {
 app.post('/api/tbload', async (req, res) => {
   console.log('Finding sequence...')
   var seq = await Users.findOne({username : req.body.username});
-  if(seq === null)
+  if(seq === undefined)
   {
     console.log('User doesnt exist!');
     return;
@@ -105,9 +104,35 @@ app.post('/api/tbload', async (req, res) => {
 
 //load an instrument preset
 app.post('/api/loadinst', async (req, res) => {
-  console.log('Finding instrument preset...')
+  console.log('Finding instrument preset...');
   var inst = await Users.findOne({username : req.body.username});
   res.send(inst.inst_presets.get(req.body.preset_name));
-})
+});
+
+//get list of user sequences for client UI
+app.post('/api/getseqlist', async (req, res) => {
+  console.log('Getting user sequences...');
+  var user = await Users.findOne({username : req.body.username});
+  //check if user is real (though if this method is being called by the client, then the user should already be logged in)
+  if(user !== undefined)
+  {
+    res.send(user.sequences);
+  } else {
+    res.send('User not found!');
+  }
+});
+
+//get list of user instruments for client UI
+app.post('/api/getinstlist', async (req, res) => {
+  console.log('Getting user instruments...');
+  var user = await Users.findOne({username : req.body.username});
+  //check if user is real (though if this method is being called by the client, then the user should already be logged in)
+  if(user !== undefined)
+  {
+    res.send(user.inst_presets);
+  } else {
+    res.send('User not found!');
+  }
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
