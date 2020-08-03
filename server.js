@@ -116,7 +116,8 @@ app.post('/api/getseqlist', async (req, res) => {
   //check if user is real (though if this method is being called by the client, then the user should already be logged in)
   if(user !== undefined)
   {
-    res.send(user.sequences);
+    seqs = user.getSequences();
+    res.send(seqs);
   } else {
     res.send('User not found!');
   }
@@ -129,7 +130,8 @@ app.post('/api/getinstlist', async (req, res) => {
   //check if user is real (though if this method is being called by the client, then the user should already be logged in)
   if(user !== undefined)
   {
-    res.send(user.inst_presets);
+    insts = user.getInstruments();
+    res.send(insts);
   } else {
     res.send('User not found!');
   }

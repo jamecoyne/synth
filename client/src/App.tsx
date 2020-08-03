@@ -245,7 +245,7 @@ testDB = async () => {
 
   //test sequence save
       //not really doable without the client running
-
+      //already done
 
 
   //test sequence load
@@ -260,7 +260,12 @@ testDB = async () => {
       })
   });
   const seqloadbody = await seqloadresponse.json();
-  console.log('Sequence loaded!');
+  if(seqloadbody.length === 16)
+  {
+    console.log('Sequence loaded!');
+  } else{
+    console.log('Sequence failed to load!');
+  }
 
 
 
@@ -275,12 +280,20 @@ testDB = async () => {
       })
   });
   const seqlistbody = await seqlistresponse.json();
-  console.log('Got sequence list!');
+  console.log(seqlistbody);
+  if(seqlistbody.includes('my_sequence'))
+  {
+    console.log('Got sequence list!');  
+  } else {
+    console.log('Couldnt get sequence list!');
+  }
+  
 
 
 
   //test inst preset save
       //not really doable without the client running
+      //also already done
 
 
   
@@ -296,7 +309,13 @@ testDB = async () => {
       })
   });
   const instloadbody = JSON.parse(await instloadresponse.text());
-  console.log('Instrument loaded!')
+  if(instloadbody.oscillator.type === 'triangle')
+  {
+    console.log('Instrument loaded!');
+  } else {
+    console.log('Instrument failed to load!');
+  }
+  
 
 
   
@@ -311,10 +330,15 @@ testDB = async () => {
       })
   });
   const instlistbody = await instlistresponse.json();
-  console.log('Got instrument list!');
-
+  console.log(instlistbody);
+  if(instlistbody.includes('my_instrument'))
+  {
+    console.log('Got instrument list!');  
+  } else {
+    console.log('Couldnt get instrument list!');
+  }
   //all tests successful
-  console.log('All tests successful!');
+  console.log('All tests completed!');
 }
 
 render() {
