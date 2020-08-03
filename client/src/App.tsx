@@ -209,6 +209,113 @@ login = async () => {
   console.log('Login successful!');
 }
 
+testDB = async () => {
+  //url to grab from
+  //test user creation
+  const createresponse = await fetch('/api/createuser', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          un : 'newUsername',
+          pw : 'newPassword'
+      })
+  });
+  const createbody = await createresponse.text();
+  console.log(createbody);
+
+
+
+  //test user login
+  const loginresponse = await fetch('/api/login', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          un : 'janesmith',
+          pw : '12345'
+      })
+  });
+  const loginbody = await loginresponse.text();
+  console.log(loginbody);
+
+
+
+  //test sequence save
+      //not really doable without the client running
+
+
+
+  //test sequence load
+  const seqloadresponse = await fetch('/api/tbload', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          seq_name : 'my_sequence'
+      })
+  });
+  const seqloadbody = await seqloadresponse.json();
+  console.log('Sequence loaded!');
+
+
+
+  //test sequence list get
+  const seqlistresponse = await fetch('/api/getseqlist', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+      })
+  });
+  const seqlistbody = await seqlistresponse.json();
+  console.log('Got sequence list!');
+
+
+
+  //test inst preset save
+      //not really doable without the client running
+
+
+  
+  //test inst preset load
+  const instloadresponse = await fetch('/api/loadinst', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          preset_name : 'my_instrument'
+      })
+  });
+  const instloadbody = JSON.parse(await instloadresponse.text());
+  console.log('Instrument loaded!')
+
+
+  
+  //test inst preset list get
+  const instlistresponse = await fetch('/api/getinstlist', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+      })
+  });
+  const instlistbody = await instlistresponse.json();
+  console.log('Got instrument list!');
+
+  //all tests successful
+  console.log('All tests successful!');
+}
 
 render() {
     return (
@@ -366,6 +473,7 @@ render() {
             this.loadState.bind(this)(e);
           }}
         />
+        <button onClick={this.testDB}>testDB</button>
       </div>
     );
   }
