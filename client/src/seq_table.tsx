@@ -46,7 +46,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         this.state = {
             actualTable : new Array(16).fill(
                 {
-                    data: new Array(12).fill(true),
+                    data: (new Array(12)).fill(true),
                     selected: false
                 }
             ),
@@ -70,13 +70,12 @@ class SequencerTable extends Component<tableProps, tableState> {
         this.seqNotesFreq = this.state.seqNotes.map((value) => {return(this.convertToFreq(value))});
     }
 
-    tableCallback = (colIdx, col) =>
+    tableCallback = (colIdx : number, col : boolean[]) =>
     {
         console.log('callback called back: ' + col + ' id ' + colIdx);
         this.setState({
             actualTable: update(this.state.actualTable, {[colIdx]: {data: {$set: col}}})
         });
-        this.props.callback(colIdx, col);
     }
 
     componentDidUpdate(props) {
@@ -278,8 +277,16 @@ class SequencerTable extends Component<tableProps, tableState> {
         for(let i = 0; i < 16; i++){
             this.tableCallback(i, body[i]);
         }
-        
         console.log('Sequence loaded!');
+    }
+
+    printTable = () => {
+        console.log('FROM SEQ TABLE:');
+        for(let i=0; i<16; i++)
+        {
+            console.log(this.state.actualTable[i].data);
+        }
+        console.log('END SEQ TABLE');
     }
 
     render() {
@@ -305,6 +312,7 @@ class SequencerTable extends Component<tableProps, tableState> {
             <button onClick={this.loadInstrument}>load instrument</button>
             <button onClick={this.saveTable}>save sequence</button>
             <button onClick={this.loadTable}>load sequence</button>
+            <button onClick={this.printTable}>print sequencer contents</button>
             </>
         )
     }
