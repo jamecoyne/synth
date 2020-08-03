@@ -197,6 +197,137 @@ class App extends Component {
     }
   }
 
+testDB = async () => {
+  //url to grab from
+  //test user creation
+  const createresponse = await fetch('/api/createuser', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          un : 'newUsername',
+          pw : 'newPassword'
+      })
+  });
+  const createbody = await createresponse.text();
+  console.log(createbody);
+
+
+
+  //test user login
+  const loginresponse = await fetch('/api/login', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          un : 'janesmith',
+          pw : '12345'
+      })
+  });
+  const loginbody = await loginresponse.text();
+  console.log(loginbody);
+
+
+
+  //test sequence save
+      //not really doable without the client running
+      //already done
+
+
+  //test sequence load
+  const seqloadresponse = await fetch('/api/tbload', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          seq_name : 'my_sequence'
+      })
+  });
+  const seqloadbody = await seqloadresponse.json();
+  if(seqloadbody.length === 16)
+  {
+    console.log('Sequence loaded!');
+  } else{
+    console.log('Sequence failed to load!');
+  }
+
+
+
+  //test sequence list get
+  const seqlistresponse = await fetch('/api/getseqlist', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+      })
+  });
+  const seqlistbody = await seqlistresponse.json();
+  console.log(seqlistbody);
+  if(seqlistbody.includes('my_sequence'))
+  {
+    console.log('Got sequence list!');  
+  } else {
+    console.log('Couldnt get sequence list!');
+  }
+  
+
+
+
+  //test inst preset save
+      //not really doable without the client running
+      //also already done
+
+
+  
+  //test inst preset load
+  const instloadresponse = await fetch('/api/loadinst', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+          preset_name : 'my_instrument'
+      })
+  });
+  const instloadbody = JSON.parse(await instloadresponse.text());
+  if(instloadbody.oscillator.type === 'triangle')
+  {
+    console.log('Instrument loaded!');
+  } else {
+    console.log('Instrument failed to load!');
+  }
+  
+
+
+  
+  //test inst preset list get
+  const instlistresponse = await fetch('/api/getinstlist', {
+      method : 'POST',
+      headers : {
+          'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+          username : 'janesmith',
+      })
+  });
+  const instlistbody = await instlistresponse.json();
+  console.log(instlistbody);
+  if(instlistbody.includes('my_instrument'))
+  {
+    console.log('Got instrument list!');  
+  } else {
+    console.log('Couldnt get instrument list!');
+  }
+  //all tests successful
+  console.log('All tests completed!');
+}
 
   render() {
     return (
@@ -354,6 +485,7 @@ class App extends Component {
             this.loadState.bind(this)(e);
           }}
         />
+        <button onClick={this.testDB}>testDB</button>
       </div>
     );
   }
