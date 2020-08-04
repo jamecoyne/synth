@@ -27,6 +27,13 @@ userSchema.methods.addSequence = function(seq){
     this.save();
 };
 
+userSchema.methods.getInstruments = function(){
+    return Array.from(this.inst_presets.keys());
+}
+
+userSchema.methods.getSequences = function(){
+    return Array.from(this.sequences.keys());
+}
 //static method definitions
 userSchema.statics.findByUsername = function(un){
     return this.find({username : un});

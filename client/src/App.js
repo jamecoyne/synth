@@ -78,19 +78,6 @@ class App extends Component {
     this.synth.set({ envelope: this.state.envelope });
   }
 
-  stopSequence = () => {
-    Tone.Transport.stop();
-  };
-
-  playSequence = () => {
-    let index = 0;
-    //this.setState({sequencer_row: [1,0,1,1,0,0,1,0]});
-    Tone.Transport.scheduleRepeat((time) => {
-      //let step = index % this.state.sequencer_cols;
-      index++;
-    }, "4n");
-    Tone.Transport.start();
-  };
 
   play = (freq) => {
     this.synth.triggerAttack(freq);
@@ -236,27 +223,7 @@ class App extends Component {
     alert("Login successful!");
   };
 
-  //updateSequencer runs whenever a checkbox in Sequencer component is clicked, which modifys the global sequencer row
-  updateSequencer(column) {
-    console.log(column);
-    if (this.sequencer_row.length > 0) {
-      console.log("flag");
-      this.sequencer_row.length = this.state.columns;
-      for (let i = 0; i < this.sequencer_row.length; i++) {
-        //must be a better way to check for empty values
-        this.sequencer_row[i] =
-          this.sequencer_row[i] === 1 || this.sequencer_row[i] === 0
-            ? this.sequencer_row[i]
-            : 0;
-      }
-    }
-    if (this.sequencer_row[column - 1] === 1) {
-      this.sequencer_row[column - 1] = 0;
-    } else {
-      this.sequencer_row[column - 1] = 1;
-    }
-    console.log(this.sequencer_row);
-  }
+
 
   //callback function for maintaining the state here to pass to SequencerTable component
   // updateSeqTable(colIdx: number, col: Array<boolean>) {
@@ -285,6 +252,138 @@ class App extends Component {
   toggleRegisterModal() {
     const { shouldShowRegister } = this.state;
     this.setState({ shouldShowRegister: !shouldShowRegister });
+  }
+
+  testDB = async () => {
+    //url to grab from
+    //test user creation
+    const createresponse = await fetch('/api/createuser', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            un : 'newUsername',
+            pw : 'newPassword'
+        })
+    });
+    const createbody = await createresponse.text();
+    console.log(createbody);
+  
+  
+  
+    //test user login
+    const loginresponse = await fetch('/api/login', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            un : 'janesmith',
+            pw : '12345'
+        })
+    });
+    const loginbody = await loginresponse.text();
+    console.log(loginbody);
+  
+  
+  
+    //test sequence save
+        //not really doable without the client running
+        //already done
+  
+  
+    //test sequence load
+    const seqloadresponse = await fetch('/api/tbload', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            username : 'janesmith',
+            seq_name : 'my_sequence'
+        })
+    });
+    const seqloadbody = await seqloadresponse.json();
+    if(seqloadbody.length === 16)
+    {
+      console.log('Sequence loaded!');
+    } else{
+      console.log('Sequence failed to load!');
+    }
+  
+  
+  
+    //test sequence list get
+    const seqlistresponse = await fetch('/api/getseqlist', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            username : 'janesmith',
+        })
+    });
+    const seqlistbody = await seqlistresponse.json();
+    console.log(seqlistbody);
+    if(seqlistbody.includes('my_sequence'))
+    {
+      console.log('Got sequence list!');  
+    } else {
+      console.log('Couldnt get sequence list!');
+    }
+    
+  
+  
+  
+    //test inst preset save
+        //not really doable without the client running
+        //also already done
+  
+  
+    
+    //test inst preset load
+    const instloadresponse = await fetch('/api/loadinst', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            username : 'janesmith',
+            preset_name : 'my_instrument'
+        })
+    });
+    const instloadbody = JSON.parse(await instloadresponse.text());
+    if(instloadbody.oscillator.type === 'triangle')
+    {
+      console.log('Instrument loaded!');
+    } else {
+      console.log('Instrument failed to load!');
+    }
+    
+  
+  
+    
+    //test inst preset list get
+    const instlistresponse = await fetch('/api/getinstlist', {
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json'
+        },
+        body : JSON.stringify({
+            username : 'janesmith',
+        })
+    });
+    const instlistbody = await instlistresponse.json();
+    console.log(instlistbody);
+    if(instlistbody.includes('my_instrument'))
+    {
+      console.log('Got instrument list!');  
+    } else {
+      console.log('Couldnt get instrument list!');
+    }
+    //all tests successful
+    console.log('All tests completed!');
   }
 
   render() {

@@ -360,6 +360,7 @@ class SequencerTable extends Component<tableProps, tableState> {
                     size={12}
                     selected={value.selected}
                     callback={this.tableCallback}
+                    actualColumn={this.state.actualTable[index].data}
                   />
                 );
               })}
