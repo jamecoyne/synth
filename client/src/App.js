@@ -23,8 +23,10 @@ import {
 class App extends Component {
   synth = new Tone.PolySynth(Tone.Synth).toMaster();
 
-  sequencer_row = [] as number[];
-  sequencer_table = [] as Array<any>;
+  // sequencer_row = [] as number[];
+  sequencer_row = [];
+  // sequencer_table = [] as Array<any>;
+  sequencer_table = [];
 
   state = {
     shouldShowLogin: false,
@@ -263,7 +265,8 @@ class App extends Component {
   //   );
   // }
 
-  updateSeqTable(colIdx: number, col: Array<boolean>) {
+  // updateSeqTable(colIdx: number, col: Array<boolean>) {
+  updateSeqTable(colIdx, col) {
     console.log(
       "Column updated: " + colIdx + "\nNew values: " + col.toString()
     );
@@ -292,152 +295,6 @@ class App extends Component {
     } = this.state;
     return (
       <div className="App">
-        {/* 
-        <Piano
-          noteRange={this.state.noteRange}
-          width={600}
-          playNote={this.playNode}
-          stopNote={this.stopNote}
-          disabled={false}
-          keyboardShortcuts={this.keyboardShortcuts}
-        />
-        
-        TONEJS
-        <br/>
-        <table>
-        <tr>
-            <th colSpan={2}>Note and Duration</th>
-          </tr>
-          <tr>
-            <td>
-              Octave
-            </td>
-            <td>
-              <input 
-                id={"octaveSlider"}
-                type={"range"}
-                min={-2}
-                max={2}
-                step={1}
-                defaultValue={this.state.octave}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({octave: parseFloat(e.currentTarget.value)})
-                  }
-                }
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Duration (sec)
-            </td>
-            <td>
-              <input 
-                id={"durationSlider"}
-                type={"range"}
-                min={0.1} 
-                max={1}
-                step={.1}
-                defaultValue={this.state.duration}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({duration: parseFloat(e.currentTarget.value)})
-                  }
-                }
-              />
-            </td>
-          </tr>
-          <tr>
-            <th colSpan={2}>Envelope</th>
-          </tr>
-          <tr>
-            <td>
-              Attack
-            </td>
-            <td>
-              <input 
-                id={"attackSlider"}  
-                type={"range"} 
-                min={0.1} 
-                max={2}
-                step={.1}
-                defaultValue={this.state.envelope.attack}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({envelope: {attack: parseFloat(e.currentTarget.value)}})
-                  }
-                }
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Decay
-            </td>
-            <td>
-              <input
-                id={"decaySlider"}  
-                type={"range"}
-                min={0.1}
-                max={1}
-                step={.1}
-                defaultValue={this.state.envelope.decay}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({envelope: {decay: parseFloat(e.currentTarget.value)}})
-                  }
-                }
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Sustain
-            </td>
-            <td>
-              <input 
-                id={"sustainSlider"}
-                type={"range"}
-                min={0.1}
-                max={1}
-                step={.1}
-                defaultValue={this.state.envelope.sustain}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({envelope: {sustain: parseFloat(e.currentTarget.value)}})
-                  }
-                }
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Release
-            </td>
-            <td>
-              <input 
-                id={"releaseSlider"}
-                type={"range"}
-                min={0.1}
-                max={1}
-                step={.1}
-                defaultValue={this.state.envelope.release}
-                onChange={
-                  (e: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({envelope: {release: parseFloat(e.currentTarget.value)}})
-                  }
-                }
-                />
-            </td>
-          </tr>
-        </table>
-
-		    <div className={"transport"}></div>
-        <SequencerTable len={this.state.sequencer_cols} actualTable={this.sequencer_table} callback={this.updateSeqTable} octave={this.state.octave} envelope={this.state.envelope}/>
-        <button onClick={this.saveState.bind(this)}>Save State</button>
-        */}
-
         <Navbar bg="dark" variant="dark">
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="container-fluid">
@@ -693,15 +550,6 @@ class App extends Component {
             <Col>
               Sequencer
               <Row>
-                {/* <Piano
-                  style={{ border: "1px solid blue" }}
-                  noteRange={this.state.noteRange}
-                  playNote={this.playNode}
-                  stopNote={this.stopNote}
-                  disabled={false}
-                  keyboardShortcuts={this.keyboardShortcuts}
-                /> */}
-
                 <SequencerTable
                   len={this.state.sequencer_cols}
                   actualTable={this.sequencer_table}
@@ -712,10 +560,15 @@ class App extends Component {
               </Row>
             </Col>
           </Row>
-          {/* <Row style={{ border: "1px solid blue", height: "35vh" }}>
-            Recording component goes here!
-          </Row> */}
         </Container>
+        <Piano
+          style={{ border: "1px solid blue" }}
+          noteRange={this.state.noteRange}
+          playNote={this.playNode}
+          stopNote={this.stopNote}
+          disabled={false}
+          keyboardShortcuts={this.keyboardShortcuts}
+        />
       </div>
     );
   }
