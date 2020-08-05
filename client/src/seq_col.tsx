@@ -42,7 +42,7 @@ class SequencerColumn extends Component<colProps, colState> {
                 
                     <div 
                         //conditionally render filled or not 
-                        className={value ? "row" : "row_filled"}
+                        className={value ? "seq_cell" : "row_filled"}
                         // when clicked update column state, which forces the component to rerender, then call the callback 
                         onClick={() => this.toggleClass(index)}
                     />

@@ -52,6 +52,10 @@ class App extends Component {
     sequencer_rows: 12,
     sequencer_table: new Array(16).fill(new Array(12).fill(true)),
     currUser: String,
+    regUN: String,
+    regPW: String,
+    logUN: String,
+    logPW: String,
   };
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -168,14 +172,16 @@ class App extends Component {
 
   //create user
   register = async () => {
+    var newUsername = this.state.regUN;
+    var newPassword = this.state.regPW;
     const response = await fetch("/api/createuser", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        un: "newUsername",
-        pw: "newPassword",
+        un: newUsername,
+        pw: newPassword,
       }),
     });
     const body = await response.text();
@@ -185,7 +191,7 @@ class App extends Component {
         break;
       }
       case "User successfully created!": {
-        this.setState({ currUser: "newUsername" });
+        this.setState({ currUser: newUsername });
         break;
       }
     }
@@ -194,20 +200,23 @@ class App extends Component {
 
   //log in as user
   login = async () => {
+    var logUsername = this.state.logUN;
+    var logPassword = this.state.logPW;
     const response = await fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        un: "janesmith",
-        pw: "12345",
+        un: logUsername,
+        pw: logPassword,
       }),
     });
     const body = await response.text();
     switch (body) {
       case "Login successful!": {
-        this.setState({ currUser: "janesmith" });
+        this.setState({ currUser: logUsername });
+        console.log(body);
         break;
       }
       case "Password incorrect!": {
@@ -460,13 +469,13 @@ class App extends Component {
             <Form>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="username" placeholder="username" />
+                <Form.Control type="username" placeholder="username" onChange={(e) => {this.setState({regUN: e.target.value})}}/>
               </Form.Group>
             </Form>
             <Form>
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" />
+                <Form.Control type="password" placeholder="password" onChange={(e) => {this.setState({regPW: e.target.value})}}/>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -497,13 +506,13 @@ class App extends Component {
             <Form>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="username" placeholder="username" />
+                <Form.Control type="username" placeholder="username" onChange={(e) => {this.setState({logUN: e.target.value})}}/>
               </Form.Group>
             </Form>
             <Form>
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" />
+                <Form.Control type="password" placeholder="password" onChange={(e) => {this.setState({logPW: e.target.value})}}/>
               </Form.Group>
             </Form>
           </Modal.Body>

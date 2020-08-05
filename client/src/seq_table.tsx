@@ -318,10 +318,10 @@ class SequencerTable extends Component<tableProps, tableState> {
                       <Dropdown.Item onClick={this.loadInstrument.bind(this)}>
                         load instrument
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={this.loadTable.bind(this)}>
+                      <Dropdown.Item onClick={this.saveTable.bind(this)}>
                         save table
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={this.saveTable.bind(this)}>
+                      <Dropdown.Item onClick={this.loadTable.bind(this)}>
                         load table
                       </Dropdown.Item>
                     </Dropdown.Menu>

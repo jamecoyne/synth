@@ -70,7 +70,7 @@ app.post("/api/login", async (req, res) => {
   if (curruser == undefined) {
     res.send("User does not exist");
   }
-  if (curruser.password == req.password) {
+  if (curruser.password === req.body.password) {
     console.log("Login successful!");
     res.send("Login successful!");
   } else {
