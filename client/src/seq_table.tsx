@@ -213,6 +213,46 @@ class SequencerTable extends Component<tableProps, tableState> {
     console.log(body);
   };
 
+  getSeqList = async () => {
+    const seqlistresponse = await fetch('/api/getseqlist', {
+      method : 'POST',
+      headers : {
+        'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+        username : this.props.currUser,
+      })
+    });
+    const seqlistbody = await seqlistresponse.json();
+    console.log(seqlistbody);
+    if(seqlistbody.includes('my_sequence'))
+    {
+      console.log('Got sequence list!');  
+    } else {
+      console.log('Couldnt get sequence list!');
+    }
+  }
+
+  getInstList = async () => {
+    const instlistresponse = await fetch('/api/getinstlist', {
+      method : 'POST',
+      headers : {
+        'Content-type' : 'application/json'
+      },
+      body : JSON.stringify({
+        username : this.props.currUser,
+      })
+    });
+    const instlistbody = await instlistresponse.json();
+    console.log(instlistbody);
+    if(instlistbody.includes('my_instrument'))
+    {
+      console.log('Got instrument list!');  
+    } else {
+      console.log('Couldnt get instrument list!');
+    }
+  }
+
   updateColumnSelected(colId: number, value: boolean) {
     if (colId < 0) colId = this.state.actualTable.length - 1;
     this.setState({
