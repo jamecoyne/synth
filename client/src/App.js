@@ -158,16 +158,17 @@ class App extends Component {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "janesmith",
+        username: this.state.currUser,
         preset_name: "my_instrument",
       }),
     });
     const body = JSON.parse(await response.text());
-    this.synth.set(body.oscillator);
-    this.synth.set(body.envelope);
     this.setState({ octave: body.octave });
     this.setState({waveshape: body.oscillator.type});
-    //reflect change in the sliders
+    this.setState({envelope: body.envelope});
+    this.synth.set(body.oscillator);
+    this.synth.set(body.envelope);  
+    //reflect change in the sliders somehow
 
     console.log("Instrument loaded!");
   };

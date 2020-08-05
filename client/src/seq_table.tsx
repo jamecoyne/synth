@@ -146,7 +146,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "janesmith",
+        username: this.props.currUser,
         seq_name: "my_sequence",
       }),
     });
@@ -167,7 +167,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "janesmith",
+        username: this.props.currUser,
         seq_name: "my_sequence",
         seq_table: this.getRawTable(),
       }),
@@ -201,7 +201,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "janesmith",
+        username: this.props.currUser,
         name: "my_instrument",
         inst: JSON.stringify({
           oscillator: this.synth.get().oscillator,
