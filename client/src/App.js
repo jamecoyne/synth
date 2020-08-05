@@ -43,7 +43,7 @@ class App extends Component {
       sustain: 0.5,
       release: 0.5,
     },
-    waveshape: "sine",
+    waveshape: "triangle",
     noteRange: {
       first: MidiNumbers.fromNote("c3"),
       last: MidiNumbers.fromNote("a4"),
@@ -166,6 +166,7 @@ class App extends Component {
     this.synth.set(body.oscillator);
     this.synth.set(body.envelope);
     this.setState({ octave: body.octave });
+    this.setState({waveshape: body.oscillator.type});
     //reflect change in the sliders
 
     console.log("Instrument loaded!");
@@ -666,6 +667,8 @@ class App extends Component {
                   octave={this.state.octave}
                   envelope={this.state.envelope}
                   waveshape={this.synth.get().oscillator}
+                  currUser={this.state.currUser}
+                  instload={this.loadInstrument}
                 />
               </Row>
             </Col>

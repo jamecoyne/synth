@@ -24,6 +24,8 @@ type tableProps = {
   octave: number;
   envelope: {};
   waveshape: {};
+  currUser: string;
+  instload: (inst: string) => void;
 };
 
 type tableState = {
@@ -175,20 +177,21 @@ class SequencerTable extends Component<tableProps, tableState> {
   };
 
   loadInstrument = async (inst_name: any) => {
-    const response = await fetch("/api/loadinst", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username: "janesmith",
-        preset_name: "my_instrument",
-      }),
-    });
-    const body = JSON.parse(await response.text());
-    this.synth.set(body);
-    //this does not reflect in the sliders
-    console.log("Instrument loaded!");
+    // const response = await fetch("/api/loadinst", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     username: "janesmith",
+    //     preset_name: "my_instrument",
+    //   }),
+    // });
+    // const body = JSON.parse(await response.text());
+    // this.synth.set(body);
+    // //this does not reflect in the sliders
+    // console.log("Instrument loaded!");
+    this.props.instload('my_instrument');
   };
   //saves instrument preset
   saveInstrument = async () => {
