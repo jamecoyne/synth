@@ -1,4 +1,4 @@
-# Project Name
+# WebSynth
 ## Introduction
 A lightweight web-based synthesizer for those interested in audio synthesis.
 ## Features
@@ -8,8 +8,9 @@ A lightweight web-based synthesizer for those interested in audio synthesis.
 ## Getting Started
 ### Installation and Setup
 Clone this repository and run `npm install` to install dependencies. <br />
+Install Yarn if you haven't already [here](https://classic.yarnpkg.com/en/). <br />
 Run `yarn add typescript` to install TypeScript. <br />
-Run `npm install _____` if the terminal tells you to.
+Run `npm install _____` if the terminal tells you that a module is missing.
 
 ### Run
 In the project directory, you can run:
@@ -28,6 +29,7 @@ Also runs the app. <br />
 Starts the server and client processes simultaneously.
 
 ## Demo Video
+[here](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 ## Contributors
 * Jame Coyne
 * James Desmond
