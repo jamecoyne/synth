@@ -6,9 +6,10 @@ A lightweight web-based synthesizer for those interested in audio synthesis.
 * 16-note sequencer
 * User profile for saving and loading slider values and sequences
 ## Getting Started
+## Prerequisites
+You'll need to have [NPM](https://www.npmjs.com/), [Yarn](https://classic.yarnpkg.com/en/), and [MongoDB](https://www.mongodb.com/) installed.
 ### Installation and Setup
 Clone this repository and run `npm install` to install dependencies. <br />
-Install Yarn if you haven't already [here](https://classic.yarnpkg.com/en/). <br />
 Run `yarn add typescript` to install TypeScript. <br />
 Run `npm install _____` if the terminal tells you that a module is missing.
 
