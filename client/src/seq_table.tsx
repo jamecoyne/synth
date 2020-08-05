@@ -23,6 +23,7 @@ type tableProps = {
   callback: (colIdx: any, col: any) => void;
   octave: number;
   envelope: {};
+  waveshape: {};
 };
 
 type tableState = {
@@ -30,6 +31,7 @@ type tableState = {
   seqNotes: number[];
   octave: number;
   envelope: {};
+  waveshape: {};
   running: boolean;
 };
 
@@ -59,6 +61,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         sustain: 0.5,
         release: 0.5,
       },
+      waveshape: {},
     };
     //because I didn't want to reverse it myself
     this.state.seqNotes.reverse();
@@ -100,6 +103,11 @@ class SequencerTable extends Component<tableProps, tableState> {
     if (this.props.envelope !== this.state.envelope) {
       this.setState({ envelope: this.props.envelope });
       this.synth.set({ envelope: this.state.envelope });
+    }
+    //update when waveshape changes
+    if (this.props.waveshape !== this.state.waveshape) {
+      this.setState({waveshape: this.props.waveshape});
+      this.synth.set({oscillator: this.state.waveshape});
     }
     //update when octave slider changes
     if (this.props.octave !== this.state.octave) {

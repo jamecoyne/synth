@@ -43,6 +43,7 @@ class App extends Component {
       sustain: 0.5,
       release: 0.5,
     },
+    waveshape: "sine",
     noteRange: {
       first: MidiNumbers.fromNote("c3"),
       last: MidiNumbers.fromNote("a4"),
@@ -51,11 +52,11 @@ class App extends Component {
     sequencer_cols: 16,
     sequencer_rows: 12,
     sequencer_table: new Array(16).fill(new Array(12).fill(true)),
-    currUser: String,
-    regUN: String,
-    regPW: String,
-    logUN: String,
-    logPW: String,
+    currUser: "",
+    regUN: "",
+    regPW: "",
+    logUN: "",
+    logPW: "",
   };
 
   keyboardShortcuts = KeyboardShortcuts.create({
@@ -79,7 +80,7 @@ class App extends Component {
 
   componentDidUpdate(props) {
     // set the synthesizer's envelope everytime a slider is changed
-    this.synth.set({ envelope: this.state.envelope });
+    this.synth.set({ envelope: this.state.envelope, oscillator:{type : this.state.waveshape} });
   }
 
 
@@ -543,10 +544,10 @@ class App extends Component {
                   <Form>
                     <Form.Group controlId="">
                       <ButtonGroup aria-label="Basic example">
-                        <Button variant="secondary">Square</Button>
-                        <Button variant="secondary">Sin</Button>
-                        <Button variant="secondary">Saw</Button>
-                        <Button variant="secondary">Triangle</Button>
+                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "square"})}}>Square</Button>
+                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "sine"})}}>Sin</Button>
+                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "sawtooth"})}}>Saw</Button>
+                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "triangle"})}}>Triangle</Button>
                       </ButtonGroup>
                     </Form.Group>
 
@@ -664,6 +665,7 @@ class App extends Component {
                   callback={this.updateSeqTable}
                   octave={this.state.octave}
                   envelope={this.state.envelope}
+                  waveshape={this.synth.get().oscillator}
                 />
               </Row>
             </Col>
