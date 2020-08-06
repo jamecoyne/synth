@@ -80,9 +80,11 @@ class App extends Component {
 
   componentDidUpdate(props) {
     // set the synthesizer's envelope everytime a slider is changed
-    this.synth.set({ envelope: this.state.envelope, oscillator:{type : this.state.waveshape} });
+    this.synth.set({
+      envelope: this.state.envelope,
+      oscillator: { type: this.state.waveshape },
+    });
   }
-
 
   play = (freq) => {
     this.synth.triggerAttack(freq);
@@ -164,10 +166,10 @@ class App extends Component {
     });
     const body = JSON.parse(await response.text());
     this.setState({ octave: body.octave });
-    this.setState({waveshape: body.oscillator.type});
-    this.setState({envelope: body.envelope});
+    this.setState({ waveshape: body.oscillator.type });
+    this.setState({ envelope: body.envelope });
     this.synth.set(body.oscillator);
-    this.synth.set(body.envelope);  
+    this.synth.set(body.envelope);
     //reflect change in the sliders somehow
 
     console.log("Instrument loaded!");
@@ -235,8 +237,6 @@ class App extends Component {
     alert("Login successful!");
   };
 
-
-
   //callback function for maintaining the state here to pass to SequencerTable component
   // updateSeqTable(colIdx: number, col: Array<boolean>) {
   //   console.log(
@@ -269,134 +269,115 @@ class App extends Component {
   testDB = async () => {
     //url to grab from
     //test user creation
-    const createresponse = await fetch('/api/createuser', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            un : 'newUsername',
-            pw : 'newPassword'
-        })
+    const createresponse = await fetch("/api/createuser", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        un: "newUsername",
+        pw: "newPassword",
+      }),
     });
     const createbody = await createresponse.text();
     console.log(createbody);
-  
-  
-  
+
     //test user login
-    const loginresponse = await fetch('/api/login', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            un : 'janesmith',
-            pw : '12345'
-        })
+    const loginresponse = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        un: "janesmith",
+        pw: "12345",
+      }),
     });
     const loginbody = await loginresponse.text();
     console.log(loginbody);
-  
-  
-  
+
     //test sequence save
-        //not really doable without the client running
-        //already done
-  
-  
+    //not really doable without the client running
+    //already done
+
     //test sequence load
-    const seqloadresponse = await fetch('/api/tbload', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            username : 'janesmith',
-            seq_name : 'my_sequence'
-        })
+    const seqloadresponse = await fetch("/api/tbload", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "janesmith",
+        seq_name: "my_sequence",
+      }),
     });
     const seqloadbody = await seqloadresponse.json();
-    if(seqloadbody.length === 16)
-    {
-      console.log('Sequence loaded!');
-    } else{
-      console.log('Sequence failed to load!');
+    if (seqloadbody.length === 16) {
+      console.log("Sequence loaded!");
+    } else {
+      console.log("Sequence failed to load!");
     }
-  
-  
-  
+
     //test sequence list get
-    const seqlistresponse = await fetch('/api/getseqlist', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            username : 'janesmith',
-        })
+    const seqlistresponse = await fetch("/api/getseqlist", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "janesmith",
+      }),
     });
     const seqlistbody = await seqlistresponse.json();
     console.log(seqlistbody);
-    if(seqlistbody.includes('my_sequence'))
-    {
-      console.log('Got sequence list!');  
+    if (seqlistbody.includes("my_sequence")) {
+      console.log("Got sequence list!");
     } else {
-      console.log('Couldnt get sequence list!');
+      console.log("Couldnt get sequence list!");
     }
-    
-  
-  
-  
+
     //test inst preset save
-        //not really doable without the client running
-        //also already done
-  
-  
-    
+    //not really doable without the client running
+    //also already done
+
     //test inst preset load
-    const instloadresponse = await fetch('/api/loadinst', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            username : 'janesmith',
-            preset_name : 'my_instrument'
-        })
+    const instloadresponse = await fetch("/api/loadinst", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "janesmith",
+        preset_name: "my_instrument",
+      }),
     });
     const instloadbody = JSON.parse(await instloadresponse.text());
-    if(instloadbody.oscillator.type === 'triangle')
-    {
-      console.log('Instrument loaded!');
+    if (instloadbody.oscillator.type === "triangle") {
+      console.log("Instrument loaded!");
     } else {
-      console.log('Instrument failed to load!');
+      console.log("Instrument failed to load!");
     }
-    
-  
-  
-    
+
     //test inst preset list get
-    const instlistresponse = await fetch('/api/getinstlist', {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json'
-        },
-        body : JSON.stringify({
-            username : 'janesmith',
-        })
+    const instlistresponse = await fetch("/api/getinstlist", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "janesmith",
+      }),
     });
     const instlistbody = await instlistresponse.json();
     console.log(instlistbody);
-    if(instlistbody.includes('my_instrument'))
-    {
-      console.log('Got instrument list!');  
+    if (instlistbody.includes("my_instrument")) {
+      console.log("Got instrument list!");
     } else {
-      console.log('Couldnt get instrument list!');
+      console.log("Couldnt get instrument list!");
     }
     //all tests successful
-    console.log('All tests completed!');
-  }
+    console.log("All tests completed!");
+  };
 
   render() {
     const {
@@ -472,13 +453,25 @@ class App extends Component {
             <Form>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="username" placeholder="username" onChange={(e) => {this.setState({regUN: e.target.value})}}/>
+                <Form.Control
+                  type="username"
+                  placeholder="username"
+                  onChange={(e) => {
+                    this.setState({ regUN: e.target.value });
+                  }}
+                />
               </Form.Group>
             </Form>
             <Form>
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" onChange={(e) => {this.setState({regPW: e.target.value})}}/>
+                <Form.Control
+                  type="password"
+                  placeholder="password"
+                  onChange={(e) => {
+                    this.setState({ regPW: e.target.value });
+                  }}
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -509,13 +502,25 @@ class App extends Component {
             <Form>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
-                <Form.Control type="username" placeholder="username" onChange={(e) => {this.setState({logUN: e.target.value})}}/>
+                <Form.Control
+                  type="username"
+                  placeholder="username"
+                  onChange={(e) => {
+                    this.setState({ logUN: e.target.value });
+                  }}
+                />
               </Form.Group>
             </Form>
             <Form>
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="password" onChange={(e) => {this.setState({logPW: e.target.value})}}/>
+                <Form.Control
+                  type="password"
+                  placeholder="password"
+                  onChange={(e) => {
+                    this.setState({ logPW: e.target.value });
+                  }}
+                />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -546,10 +551,38 @@ class App extends Component {
                   <Form>
                     <Form.Group controlId="">
                       <ButtonGroup aria-label="Basic example">
-                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "square"})}}>Square</Button>
-                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "sine"})}}>Sin</Button>
-                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "sawtooth"})}}>Saw</Button>
-                        <Button variant="secondary" onClick={() => {this.setState({waveshape: "triangle"})}}>Triangle</Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            this.setState({ waveshape: "square" });
+                          }}
+                        >
+                          Square
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            this.setState({ waveshape: "sine" });
+                          }}
+                        >
+                          Sin
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            this.setState({ waveshape: "sawtooth" });
+                          }}
+                        >
+                          Saw
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => {
+                            this.setState({ waveshape: "triangle" });
+                          }}
+                        >
+                          Triangle
+                        </Button>
                       </ButtonGroup>
                     </Form.Group>
 
@@ -672,17 +705,24 @@ class App extends Component {
                   instload={this.loadInstrument}
                 />
               </Row>
+              <Row
+                style={{
+                  height: "200px",
+                  marginTop: "20px",
+                }}
+              >
+                <Piano
+                  noteRange={this.state.noteRange}
+                  playNote={this.playNode}
+                  stopNote={this.stopNote}
+                  disabled={false}
+                  keyboardShortcuts={this.keyboardShortcuts}
+                  style={{ height: "100px" }}
+                />
+              </Row>
             </Col>
           </Row>
         </Container>
-        <Piano
-          style={{ border: "1px solid blue" }}
-          noteRange={this.state.noteRange}
-          playNote={this.playNode}
-          stopNote={this.stopNote}
-          disabled={false}
-          keyboardShortcuts={this.keyboardShortcuts}
-        />
       </div>
     );
   }
