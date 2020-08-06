@@ -186,7 +186,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
+        username: this.props.currUser,
         seq_name: name,
       }),
     });
@@ -207,7 +207,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
+        username: this.props.currUser,
         seq_name: name,
         seq_table: this.getRawTable(),
       }),
@@ -223,7 +223,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
+        username: this.props.currUser,
         preset_name: inst_name,
       }),
     })
@@ -246,7 +246,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
+        username: this.props.currUser,
         name: instrumentName,
         inst: JSON.stringify({
           oscillator: this.synth.get().oscillator,
@@ -266,7 +266,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
+        username: this.props.currUser,
       }),
     })
       .then((res) => res.json())
@@ -287,7 +287,7 @@ class SequencerTable extends Component<tableProps, tableState> {
       },
       body: JSON.stringify({
         // username: this.props.currUser,
-        username: "wave",
+        username: this.props.currUser,
       }),
     })
       .then((response) => response.json())
