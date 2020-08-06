@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { Button, Container, Row, Col, Form } from "react-bootstrap";
 
 type colProps = {
-    idx: number;
-    size : number;
-    actualColumn : boolean[]
-    callback: (colIdx, col) => void;
-    selected : boolean;
-}
+  idx: number;
+  size: number;
+  callback: (colIdx: any, col: any) => void;
+  actualColumn: boolean[];
+  selected: boolean;
+};
 
 type colState = {
-    filled: boolean[]
-}
+  filled: boolean[];
+};
 
 class SequencerColumn extends Component<colProps, colState> {
 
@@ -41,7 +42,7 @@ class SequencerColumn extends Component<colProps, colState> {
                 
                     <div 
                         //conditionally render filled or not 
-                        className={value ? "row" : "row_filled"}
+                        className={value ? "seq_cell" : "row_filled"}
                         // when clicked update column state, which forces the component to rerender, then call the callback 
                         onClick={() => this.toggleClass(index)}
                     />

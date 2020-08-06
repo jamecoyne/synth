@@ -10,7 +10,6 @@ import {
   Form,
   Dropdown,
   Nav,
-  Modal,
 } from "react-bootstrap";
 
 type ColumnData = {
@@ -24,9 +23,6 @@ type tableProps = {
   callback: (colIdx: any, col: any) => void;
   octave: number;
   envelope: {};
-  waveshape: {};
-  currUser: string;
-  instload: (inst: string) => void;
 };
 
 type tableState = {
@@ -34,16 +30,7 @@ type tableState = {
   seqNotes: number[];
   octave: number;
   envelope: {};
-  waveshape: {};
   running: boolean;
-  showSaveInstrumnet: boolean;
-  showLoadInstrument: boolean;
-  showSaveTable: boolean;
-  showLoadTable: boolean;
-  saveInstrumentName: string;
-  saveTableName: string;
-  allInstruments: Array<string>;
-  allSequences: Array<string>;
 };
 
 class SequencerTable extends Component<tableProps, tableState> {
@@ -72,21 +59,7 @@ class SequencerTable extends Component<tableProps, tableState> {
         sustain: 0.5,
         release: 0.5,
       },
-      waveshape: {},
-      showSaveInstrumnet: false,
-      showLoadInstrument: false,
-      showSaveTable: false,
-      showLoadTable: false,
-      saveInstrumentName: "",
-      saveTableName: "",
-      allInstruments: [],
-      allSequences: [],
     };
-
-    this.getInstList = this.getInstList.bind(this);
-    this.toggleSaveInstrument = this.toggleSaveInstrument.bind(this);
-    this.saveInstrument = this.saveInstrument.bind(this);
-
     //because I didn't want to reverse it myself
     this.state.seqNotes.reverse();
     //for letting the synth know which frequencies to attack/release
@@ -94,22 +67,6 @@ class SequencerTable extends Component<tableProps, tableState> {
     //   return this.convertToFreq(value);
     // });
   }
-
-  toggleSaveInstrument = () => {
-    this.setState({ showSaveInstrumnet: !this.state.showSaveInstrumnet });
-  };
-
-  toggleLoadInstrument = () => {
-    this.setState({ showLoadInstrument: !this.state.showLoadInstrument });
-  };
-
-  toggleSaveTable = () => {
-    this.setState({ showSaveTable: !this.state.showSaveTable });
-  };
-
-  toggleLoadTable = () => {
-    this.setState({ showLoadTable: !this.state.showLoadTable });
-  };
 
   numberToNote = (number: any) => {
     const scale = [
@@ -138,18 +95,11 @@ class SequencerTable extends Component<tableProps, tableState> {
     this.props.callback(colIdx, col);
   };
 
-  componentDidMount() {}
-
   componentDidUpdate(props: any) {
     //update when envelope sliders change
     if (this.props.envelope !== this.state.envelope) {
       this.setState({ envelope: this.props.envelope });
       this.synth.set({ envelope: this.state.envelope });
-    }
-    //update when waveshape changes
-    if (this.props.waveshape !== this.state.waveshape) {
-      this.setState({ waveshape: this.props.waveshape });
-      this.synth.set({ oscillator: this.state.waveshape });
     }
     //update when octave slider changes
     if (this.props.octave !== this.state.octave) {
@@ -179,15 +129,15 @@ class SequencerTable extends Component<tableProps, tableState> {
     return freq;
   };
 
-  loadTable = async (name: string) => {
+  loadTable = async () => {
     const response = await fetch("/api/tbload", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
-        seq_name: name,
+        username: "janesmith",
+        seq_name: "my_sequence",
       }),
     });
     const body = await response.json();
@@ -200,15 +150,15 @@ class SequencerTable extends Component<tableProps, tableState> {
   };
 
   //extremely impromptu function for saving the contents of the table to the database
-  saveTable = async (name: string) => {
+  saveTable = async () => {
     const response = await fetch("/api/tbsave", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
-        seq_name: name,
+        username: "janesmith",
+        seq_name: "my_sequence",
         seq_table: this.getRawTable(),
       }),
     });
@@ -216,38 +166,32 @@ class SequencerTable extends Component<tableProps, tableState> {
     console.log(body);
   };
 
-  loadInstrument = (inst_name: any) => {
-    fetch("/api/loadinst", {
+  loadInstrument = async (inst_name: any) => {
+    const response = await fetch("/api/loadinst", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
-        preset_name: inst_name,
+        username: "janesmith",
+        preset_name: "my_instrument",
       }),
-    })
-      .then((response) => response.text())
-      .then((response) => JSON.parse(response))
-      .then((body) => {
-        this.synth.set(body);
-        //this does not reflect in the sliders
-        alert("Instrument " + inst_name + " loaded!");
-        this.toggleLoadInstrument();
-      });
+    });
+    const body = JSON.parse(await response.text());
+    this.synth.set(body);
+    //this does not reflect in the sliders
+    console.log("Instrument loaded!");
   };
-
   //saves instrument preset
-  saveInstrument = async (instrumentName: string) => {
-    // alert("saving instrument " + instrumentName);
+  saveInstrument = async () => {
     const response = await fetch("/api/saveinst", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        username: "wave",
-        name: instrumentName,
+        username: "janesmith",
+        name: "my_instrument",
         inst: JSON.stringify({
           oscillator: this.synth.get().oscillator,
           envelope: this.synth.get().envelope,
@@ -255,65 +199,7 @@ class SequencerTable extends Component<tableProps, tableState> {
       }),
     });
     const body = await response.text();
-    alert("instrument saved!");
     console.log(body);
-  };
-
-  getSeqList = async () => {
-    fetch("/api/getseqlist", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username: "wave",
-      }),
-    })
-      .then((res) => res.json())
-      .then((seqlistbody) => {
-        this.setState({ allSequences: seqlistbody });
-        console.log(seqlistbody);
-      });
-  };
-
-  getInstList = () => {
-    console.log("GETTING INSTRUMENT LIST");
-    console.log("curr user" + this.props.currUser);
-    // if (this.props.currUser != null && this.props.currUser != "") {
-    fetch("/api/getinstlist", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        // username: this.props.currUser,
-        username: "wave",
-      }),
-    })
-      .then((response) => response.json())
-      .then((instlistbody) => {
-        const returnData = new Array<string>();
-        instlistbody.forEach((item) => {
-          returnData.push(item);
-        });
-        console.log(returnData);
-        this.setState({ allInstruments: returnData });
-        // return instlistbody;
-      })
-      .catch(() => {
-        console.log("error found");
-        // return [];
-      });
-    // } else {
-    //   console.log("USER IS NULL");
-    //   // return [];
-    // }
-
-    // if (instlistbody.includes("my_instrument")) {
-    //   console.log("Got instrument list!");
-    // } else {
-    //   console.log("Couldnt get instrument list!");
-    // }
   };
 
   updateColumnSelected(colId: number, value: boolean) {
@@ -407,158 +293,9 @@ class SequencerTable extends Component<tableProps, tableState> {
   }
 
   render() {
-    const {
-      running,
-      showLoadInstrument,
-      showLoadTable,
-      showSaveInstrumnet,
-      showSaveTable,
-    } = this.state;
-
+    const { running } = this.state;
     return (
       <>
-        {/* load instrumnet */}
-        <Modal
-          show={showLoadInstrument}
-          onHide={this.toggleLoadInstrument.bind(this)}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Load Instrument</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            {this.state.allInstruments.map((item) => {
-              return (
-                <Button
-                  style={{ width: "100%", marginBottom: "3%" }}
-                  onClick={() => {
-                    this.loadInstrument(item);
-                  }}
-                >
-                  {item}
-                </Button>
-              );
-            })}
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={this.toggleLoadInstrument.bind(this)}
-            >
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* load table */}
-        <Modal show={showLoadTable} onHide={this.toggleLoadTable.bind(this)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Load Table</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            {this.state.allSequences.map((item) => {
-              return (
-                <Button
-                  style={{ width: "100%", marginBottom: "3%" }}
-                  onClick={() => {
-                    this.loadTable(item);
-                  }}
-                >
-                  {item}
-                </Button>
-              );
-            })}
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={this.toggleLoadTable.bind(this)}
-            >
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* save instrument */}
-        <Modal
-          show={showSaveInstrumnet}
-          onHide={this.toggleSaveInstrument.bind(this)}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Save Instrument</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            <Form.Control
-              className="text-muted"
-              placeholder="instrument name"
-              onChange={(e) => {
-                this.setState({ saveInstrumentName: e.target.value });
-              }}
-            ></Form.Control>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                this.toggleSaveInstrument();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              type="submit"
-              onClick={() => {
-                this.toggleSaveInstrument();
-                this.saveInstrument(this.state.saveInstrumentName);
-              }}
-            >
-              Save
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* save table */}
-        <Modal show={showSaveTable} onHide={this.toggleSaveTable.bind(this)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Save Table</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            <Form.Control
-              className="text-muted"
-              placeholder="table name"
-              onChange={(e) => {
-                this.setState({ saveTableName: e.target.value });
-              }}
-            ></Form.Control>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={this.toggleSaveTable.bind(this)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              type="submit"
-              onClick={() => {
-                this.toggleSaveTable();
-                this.saveTable(this.state.saveTableName);
-              }}
-            >
-              Save
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
         <Container>
           <Col>
             <Row>
@@ -575,30 +312,16 @@ class SequencerTable extends Component<tableProps, tableState> {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      {/* <Dropdown.Item onClick={this.saveInstrument.bind(this)}> */}
-                      <Dropdown.Item onClick={this.toggleSaveInstrument}>
+                      <Dropdown.Item onClick={this.saveInstrument.bind(this)}>
                         save instrument
                       </Dropdown.Item>
-                      {/* <Dropdown.Item onClick={this.loadInstrument.bind(this)}> */}
-                      <Dropdown.Item
-                        onClick={() => {
-                          this.toggleLoadInstrument();
-                          this.getInstList();
-                        }}
-                      >
+                      <Dropdown.Item onClick={this.loadInstrument.bind(this)}>
                         load instrument
                       </Dropdown.Item>
-                      {/* <Dropdown.Item onClick={this.saveTable.bind(this)}> */}
-                      <Dropdown.Item onClick={this.toggleSaveTable}>
+                      <Dropdown.Item onClick={this.loadTable.bind(this)}>
                         save table
                       </Dropdown.Item>
-                      {/* <Dropdown.Item onClick={this.saveTable.bind(this)}> */}
-                      <Dropdown.Item
-                        onClick={() => {
-                          this.toggleLoadTable();
-                          this.getSeqList();
-                        }}
-                      >
+                      <Dropdown.Item onClick={this.saveTable.bind(this)}>
                         load table
                       </Dropdown.Item>
                     </Dropdown.Menu>
@@ -637,7 +360,6 @@ class SequencerTable extends Component<tableProps, tableState> {
                     size={12}
                     selected={value.selected}
                     callback={this.tableCallback}
-                    actualColumn={this.state.actualTable[index].data}
                   />
                 );
               })}

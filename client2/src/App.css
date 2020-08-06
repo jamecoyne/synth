@@ -12,22 +12,13 @@
 .row_unfilled {
   border-style: solid;
   border-width: 1px;
-  display: flex;
 }
 
 .row_filled {
-  height: 3vh;
   border-style: solid;
   border-width: 1px;
   background-color: white;
   color: white;
-  display: flex;
-}
-
-.column {	
-  flex: 1;	
-  flex-direction: column;	
-  display: flex;	
 }
 
 .column_filled {
